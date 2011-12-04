@@ -1816,6 +1816,7 @@
   <java-symbol type="string" name="reboot_system" />
   <java-symbol type="string" name="reboot_progress" />
   <java-symbol type="string" name="app_killed_message" />
+  <java-symbol type="string" name="config_legacyUmsLunFile" />
 
 
   <!-- Navigation Ring -->
