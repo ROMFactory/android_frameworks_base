@@ -117,6 +117,9 @@ public class VideoView extends SurfaceView
     /** Listener for changes to subtitle data, used to redraw when needed. */
     private RenderingWidget.OnChangedListener mSubtitlesChangedListener;
 
+    private static final int    FAST_FORWARD_TIME = 15000;
+    private static final int    REWIND_TIME = 5000;
+
     public VideoView(Context context) {
         super(context);
         initVideoView();
@@ -682,6 +685,22 @@ public class VideoView extends SurfaceView
                     mMediaController.show();
                 }
                 return true;
+            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+                int pos = getCurrentPosition() + FAST_FORWARD_TIME;
+                seekTo(pos);
+                mMediaController.show();
+            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_REWIND) {
+                int pos = getCurrentPosition() - REWIND_TIME;
+                seekTo(pos);
+                mMediaController.show();
+            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) {
+                int pos = getDuration();
+                seekTo(pos);
+                mMediaController.show();
+            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
+                int pos = 0;
+                seekTo(pos);
+                mMediaController.show();
             } else {
                 toggleMediaControlsVisiblity();
             }

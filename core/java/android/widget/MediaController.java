@@ -97,6 +97,9 @@ public class MediaController extends FrameLayout {
     private ImageButton         mNextButton;
     private ImageButton         mPrevButton;
 
+    private static final int    FAST_FORWARD_TIME = 15000;
+    private static final int    REWIND_TIME = 5000;
+
     public MediaController(Context context, AttributeSet attrs) {
         super(context, attrs);
         mRoot = this;
@@ -493,6 +496,30 @@ public class MediaController extends FrameLayout {
             if (uniqueDown) {
                 hide();
             }
+            return true;
+        } else if (event.isDown() && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+            int pos = mPlayer.getCurrentPosition() + FAST_FORWARD_TIME;
+            mPlayer.seekTo(pos);
+            setProgress();
+            show(sDefaultTimeout);
+            return true;
+        } else if (event.isDown() && keyCode == KeyEvent.KEYCODE_MEDIA_REWIND) {
+            int pos = mPlayer.getCurrentPosition() - REWIND_TIME;
+            mPlayer.seekTo(pos);
+            setProgress();
+            show(sDefaultTimeout);
+            return true;
+        } else if (event.isDown() && keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) {
+            int pos = mPlayer.getDuration();
+            mPlayer.seekTo(pos);
+            setProgress();
+            show(sDefaultTimeout);
+            return true;
+        } else if (event.isDown() && keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
+            int pos = 0;
+            mPlayer.seekTo(pos);
+            setProgress();
+            show(sDefaultTimeout);
             return true;
         }
 
