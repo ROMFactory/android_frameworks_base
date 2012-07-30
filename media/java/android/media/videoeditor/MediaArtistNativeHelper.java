@@ -3690,6 +3690,7 @@ class MediaArtistNativeHelper {
         mPreviewEditSettings.outputFile = mOutputFilename = filePath;
 
         int aspectRatio = mVideoEditor.getAspectRatio();
+        int oldVideoFrameSize = mPreviewEditSettings.videoFrameSize;
         mPreviewEditSettings.videoFrameSize = findVideoResolution(aspectRatio, height);
         mPreviewEditSettings.videoFormat = mExportVideoCodec;
         mPreviewEditSettings.audioFormat = mExportAudioCodec;
@@ -3741,6 +3742,7 @@ class MediaArtistNativeHelper {
         }
 
         mExportProgressListener = null;
+        mPreviewEditSettings.videoFrameSize = oldVideoFrameSize;
     }
 
     /**
