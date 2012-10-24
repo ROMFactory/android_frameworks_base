@@ -1083,10 +1083,19 @@ static void
 android_mtp_MtpDatabase_finalize(JNIEnv *env, jobject thiz)
 {
     MyMtpDatabase* database = (MyMtpDatabase *)env->GetIntField(thiz, field_context);
-    database->cleanup(env);
-    delete database;
-    env->SetIntField(thiz, field_context, 0);
-    checkAndClearExceptionFromCallback(env, __FUNCTION__);
+    if ( database != NULL )
+    {
+        database->cleanup(env);
+        delete database;
+        env->SetIntField(thiz, field_context, 0);
+        checkAndClearExceptionFromCallback(env, __FUNCTION__);
+    }
+}
+
+static void
+android_mtp_MtpDatabase_release(JNIEnv *env, jobject thiz)
+{
+    android_mtp_MtpDatabase_finalize(env, thiz);
 }
 
 static jstring
@@ -1102,6 +1111,7 @@ android_mtp_MtpPropertyGroup_format_date_time(JNIEnv *env, jobject thiz, jlong s
 static JNINativeMethod gMtpDatabaseMethods[] = {
     {"native_setup",            "()V",  (void *)android_mtp_MtpDatabase_setup},
     {"native_finalize",         "()V",  (void *)android_mtp_MtpDatabase_finalize},
+    {"native_release",          "()V",  (void *)android_mtp_MtpDatabase_release},
 };
 
 static JNINativeMethod gMtpPropertyGroupMethods[] = {

@@ -173,13 +173,13 @@ public class MtpDatabase {
         initDeviceProperties(context);
     }
 
+    public void release() {
+            native_release();
+    }
+
     @Override
-    protected void finalize() throws Throwable {
-        try {
+    protected void finalize() {
             native_finalize();
-        } finally {
-            super.finalize();
-        }
     }
 
     public void addStorage(MtpStorage storage) {
@@ -1040,4 +1040,5 @@ public class MtpDatabase {
 
     private native final void native_setup();
     private native final void native_finalize();
+    private native final void native_release();
 }
