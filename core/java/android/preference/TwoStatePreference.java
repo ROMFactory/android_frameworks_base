@@ -189,6 +189,12 @@ public abstract class TwoStatePreference extends Preference {
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
         setChecked(restoreValue ? getPersistedBoolean(mChecked)
                 : (Boolean) defaultValue);
+        if (restoreValue == false && defaultValue != null
+                && false == (Boolean)defaultValue) {
+            persistBoolean((Boolean)defaultValue);
+            notifyDependencyChange(shouldDisableDependents());
+            notifyChanged();
+        }
     }
 
     void sendAccessibilityEvent(View view) {
