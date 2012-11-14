@@ -2580,6 +2580,7 @@
         <activity android:name="com.android.internal.app.DisableCarModeActivity"
                 android:theme="@style/Theme.NoDisplay"
                 android:excludeFromRecents="true"
+                android:exported="true"
                 android:process=":ui">
         </activity>
 
