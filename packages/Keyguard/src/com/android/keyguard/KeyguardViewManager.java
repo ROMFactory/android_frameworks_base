@@ -97,8 +97,8 @@ public class KeyguardViewManager {
     private Drawable mCustomBackground = null;
     private boolean mBlurEnabled = false;
     private int mBlurRadius = 12;
-    private SettingsObserver mObserver;
-    
+    private Bitmap mBlurredImage = null;
+
     private KeyguardUpdateMonitorCallback mBackgroundChanger = new KeyguardUpdateMonitorCallback() {
         @Override
         public void onSetBackground(Bitmap bmp) {
@@ -111,29 +111,6 @@ public class KeyguardViewManager {
     public interface ShowListener {
         void onShown(IBinder windowToken);
     };
-
-    class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_SEE_THROUGH), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_BLUR_BEHIND), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_BLUR_RADIUS), false, this);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            setKeyguardParams();
-            updateSettings();
-            mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
-        }
-    }
 
     private void updateSettings() {
     	mBlurEnabled = Settings.System.getInt(mContext.getContentResolver(),
@@ -159,8 +136,6 @@ public class KeyguardViewManager {
         mViewMediatorCallback = callback;
         mLockPatternUtils = lockPatternUtils;
 
-        mObserver = new SettingsObserver(new Handler());
-        mObserver.observe();
         updateSettings();
     }
 
@@ -199,11 +174,8 @@ public class KeyguardViewManager {
 
         int flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
-                    | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
-
-            if (!isSeeThroughEnabled()) {
-                flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-            }
+                    | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
+                    | WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
 
             if (!mNeedsInput) {
                 flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
@@ -244,10 +216,11 @@ public class KeyguardViewManager {
     }
 
     public void setBackgroundBitmap(Bitmap bmp) {
-    	if (mBlurEnabled) {
-    		bmp = blurBitmap(bmp, mBlurRadius);
-    	}
-    	mCustomBackground = new BitmapDrawable(mContext.getResources(), bmp);
+    	if (bmp != null) {
+                mBlurredImage = blurBitmap(bmp, bmp.getWidth() < 900 ? 14:18);
+    	} else {
+                mBlurredImage = null;
+        }
     }
 
     private Bitmap blurBitmap (Bitmap bmp, int radius) {
@@ -366,7 +339,7 @@ public class KeyguardViewManager {
             if (bgAspect > vAspect) {
                 background.setBounds(0, 0, (int) (vHeight * bgAspect), vHeight);
             } else {
-                background.setBounds(0, 0, vWidth, (int) (vWidth / bgAspect));
+                background.setBounds(0, 0, vWidth, (int) (vWidth * (vAspect  >= 1 ? bgAspect : (1 / bgAspect))));
             }
         }
 
@@ -441,6 +414,9 @@ public class KeyguardViewManager {
         mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
 
         mKeyguardHost.restoreHierarchyState(mStateContainer);
+        if (mBlurredImage != null) {
+            KeyguardUpdateMonitor.getInstance(mContext).dispatchSetBackground(mBlurredImage);
+        }
     }
 
     private void inflateKeyguardView(Bundle options) {
@@ -508,22 +484,14 @@ public class KeyguardViewManager {
         mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
     }
 
-    private boolean isSeeThroughEnabled() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1;
-    }
 
     void updateShowWallpaper(boolean show) {
-        if (isSeeThroughEnabled()) {
-            return;
-        } else {
             if (show) {
                 mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
             } else {
                 mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
             }
             mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
-        }
     }
 
     public void setNeedsInput(boolean needsInput) {
