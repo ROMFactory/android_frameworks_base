@@ -127,7 +127,8 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
+public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
+        NetworkController.UpdateUIListener {
     static final String TAG = "PhoneStatusBar";
     public static final boolean DEBUG = BaseStatusBar.DEBUG;
     public static final boolean SPEW = false;
@@ -891,6 +892,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         mBattery = (BatteryMeterView) mStatusBarView.findViewById(R.id.battery);
         mCircleBattery = (BatteryCircleMeterView) mStatusBarView.findViewById(R.id.circle_battery);
 
+        mNetworkController.setListener(this);
+
         return mStatusBarView;
     }
 
@@ -1431,7 +1434,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         }
     }
 
+    /**
+     * Listen for UI updates and refresh layout.
+     */
+    public void onUpdateUI() {
+        updateCarrierAndWifiLabelVisibility(true, false);
+    }
+
     protected void updateCarrierAndWifiLabelVisibility(boolean force) {
+>>>>>>> e554b81... UI not updated correctly in expanded statusbar
         if (!mShowCarrierInPanel || mCarrierAndWifiView == null) {
             return;
         }
