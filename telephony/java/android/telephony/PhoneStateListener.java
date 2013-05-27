@@ -28,6 +28,8 @@ import android.telephony.CellLocation;
 import android.telephony.CellInfo;
 import android.telephony.Rlog;
 import android.telephony.MSimTelephonyManager;
+import android.telephony.PreciseCallState;
+import android.telephony.PreciseDataConnectionState;
 
 import com.android.internal.telephony.IPhoneStateListener;
 
@@ -175,6 +177,27 @@ public class PhoneStateListener {
      */
     protected int mSubscription = 0;
 
+   /**
+     * Listen for precise changes and fails to the device calls (cellular).
+     * {@more}
+     * Requires Permission: {@link android.Manifest.permission#READ_PRECISE_PHONE_STATE
+     * READ_PRECISE_PHONE_STATE}
+     *
+     * @hide
+     */
+    public static final int LISTEN_PRECISE_CALL_STATE                       = 0x00000800;
+
+    /**
+     * Listen for precise changes and fails on the data connection (cellular).
+     * {@more}
+     * Requires Permission: {@link android.Manifest.permission#READ_PRECISE_PHONE_STATE
+     * READ_PRECISE_PHONE_STATE}
+     *
+     * @see #onPreciseDataConnectionStateChanged
+     * @hide
+     */
+    public static final int LISTEN_PRECISE_DATA_CONNECTION_STATE            = 0x00001000;
+
     public PhoneStateListener() {
         // If subscription is not passed set the default subscription.
         mSubscription = MSimTelephonyManager.getDefault().getDefaultSubscription();
@@ -312,6 +335,25 @@ public class PhoneStateListener {
     }
 
     /**
+     * Callback invoked when precise device call state changes.
+     *
+     * @hide
+     */
+    public void onPreciseCallStateChanged(PreciseCallState callState) {
+        // default implementation empty
+    }
+
+    /**
+     * Callback invoked when data connection state changes with precise information.
+     *
+     * @hide
+     */
+    public void onPreciseDataConnectionStateChanged(
+            PreciseDataConnectionState dataConnectionState) {
+        // default implementation empty
+    }
+
+    /**
      * The callback methods need to be called on the handler thread where
      * this object was created.  If the binder did that for us it'd be nice.
      */
@@ -363,6 +405,16 @@ public class PhoneStateListener {
         public void onCellInfoChanged(List<CellInfo> cellInfo) {
             Message.obtain(mHandler, LISTEN_CELL_INFO, 0, 0, cellInfo).sendToTarget();
         }
+
+        public void onPreciseCallStateChanged(PreciseCallState callState) {
+            Message.obtain(mHandler, LISTEN_PRECISE_CALL_STATE, 0, 0, callState).sendToTarget();
+        }
+
+        public void onPreciseDataConnectionStateChanged(
+                PreciseDataConnectionState dataConnectionState) {
+            Message.obtain(mHandler, LISTEN_PRECISE_DATA_CONNECTION_STATE, 0, 0,
+                    dataConnectionState).sendToTarget();
+        }
     };
 
     Handler mHandler = new Handler() {
@@ -402,6 +454,12 @@ public class PhoneStateListener {
                     break;
                 case LISTEN_CELL_INFO:
                     PhoneStateListener.this.onCellInfoChanged((List<CellInfo>)msg.obj);
+                    break;
+                case LISTEN_PRECISE_CALL_STATE:
+                    PhoneStateListener.this.onPreciseCallStateChanged((PreciseCallState)msg.obj);
+                    break;
+                case LISTEN_PRECISE_DATA_CONNECTION_STATE:
+                    PhoneStateListener.this.onPreciseDataConnectionStateChanged((PreciseDataConnectionState)msg.obj);
             }
         }
     };
