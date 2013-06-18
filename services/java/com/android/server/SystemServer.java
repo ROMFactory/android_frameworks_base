@@ -1,5 +1,9 @@
 /*
  * Copyright (C) 2006 The Android Open Source Project
+ * This code has been modified.  Portions copyright (C) 2010, T-Mobile USA, Inc.
+ * Copyright (c) 2013 The Linux Foundation. All rights reserved.
+ *
+ * Not a Contribution.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,6 +160,31 @@ class ServerThread {
         InputManagerService inputManager = null;
         TelephonyRegistry telephonyRegistry = null;
         ConsumerIrService consumerIr = null;
+        MSimTelephonyRegistry msimTelephonyRegistry = null;
+
+        // Create a shared handler thread for UI within the system server.
+        // This thread is used by at least the following components:
+        // - WindowManagerPolicy
+        // - KeyguardViewManager
+        // - DisplayManagerService
+        HandlerThread uiHandlerThread = new HandlerThread("UI");
+        uiHandlerThread.start();
+        Handler uiHandler = new Handler(uiHandlerThread.getLooper());
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                //Looper.myLooper().setMessageLogging(new LogPrinter(
+                //        Log.VERBOSE, "WindowManagerPolicy", Log.LOG_ID_SYSTEM));
+                android.os.Process.setThreadPriority(
+                        android.os.Process.THREAD_PRIORITY_FOREGROUND);
+                android.os.Process.setCanSelfBackground(false);
+
+                // For debug builds, log event loop stalls to dropbox for analysis.
+                if (StrictMode.conditionallyEnableDebugLogging()) {
+                    Slog.i(TAG, "Enabled StrictMode logging for UI Looper");
+                }
+            }
+        });
 
         // Create a handler thread just for the window manager to enjoy.
         HandlerThread wmHandlerThread = new HandlerThread("WindowManager");
@@ -216,6 +245,12 @@ class ServerThread {
             Slog.i(TAG, "Telephony Registry");
             telephonyRegistry = new TelephonyRegistry(context);
             ServiceManager.addService("telephony.registry", telephonyRegistry);
+
+            if (android.telephony.MSimTelephonyManager.getDefault().isMultiSimEnabled()) {
+                Slog.i(TAG, "MSimTelephony Registry");
+                msimTelephonyRegistry = new MSimTelephonyRegistry(context);
+                ServiceManager.addService("telephony.msim.registry", msimTelephonyRegistry);
+            }
 
             Slog.i(TAG, "Scheduling Policy");
             ServiceManager.addService("scheduling_policy", new SchedulingPolicyService());
@@ -929,6 +964,7 @@ class ServerThread {
         final TelephonyRegistry telephonyRegistryF = telephonyRegistry;
         final PrintManagerService printManagerF = printManager;
         final MediaRouterService mediaRouterF = mediaRouter;
+        final MSimTelephonyRegistry msimTelephonyRegistryF = msimTelephonyRegistry;
 
         // We now tell the activity manager it is okay to run third party
         // code.  It will call back into us once it has gotten to the state
@@ -1081,6 +1117,11 @@ class ServerThread {
                     if (mediaRouterF != null) mediaRouterF.systemRunning();
                 } catch (Throwable e) {
                     reportWtf("Notifying MediaRouterService running", e);
+                }
+                try {
+                    if (msimTelephonyRegistryF != null) msimTelephonyRegistryF.systemReady();
+                } catch (Throwable e) {
+                    reportWtf("making TelephonyRegistry ready", e);
                 }
             }
         });
