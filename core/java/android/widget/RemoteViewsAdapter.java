@@ -823,11 +823,11 @@ public class RemoteViewsAdapter extends BaseAdapter implements Handler.Callback 
     public RemoteViewsAdapter(Context context, Intent intent, RemoteAdapterConnectionCallback callback) {
         mContext = context;
         mIntent = intent;
-        mAppWidgetId = intent.getIntExtra(RemoteViews.EXTRA_REMOTEADAPTER_APPWIDGET_ID, -1);
-        mLayoutInflater = LayoutInflater.from(context);
         if (mIntent == null) {
             throw new IllegalArgumentException("Non-null Intent must be specified.");
         }
+        mAppWidgetId = intent.getIntExtra(RemoteViews.EXTRA_REMOTEADAPTER_APPWIDGET_ID, -1);
+        mLayoutInflater = LayoutInflater.from(context);
         mRequestedViews = new RemoteViewsFrameLayoutRefSet();
 
         checkInteractAcrossUsersPermission(context, UserHandle.myUserId());
