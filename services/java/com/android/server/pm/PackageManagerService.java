@@ -8097,6 +8097,10 @@ public class PackageManagerService extends IPackageManager.Stub {
                 // Rename APK file based on packageName
                 final String apkName = getNextCodePath(oldCodePath, pkgName, ".apk");
                 final File newCodeFile = new File(installDir, apkName + ".apk");
+                // if this failed during the pervious update for some reason, do it now
+                if (newCodeFile.exists()) {
+                    newCodeFile.delete();
+                }
                 if (!oldCodeFile.renameTo(newCodeFile)) {
                     return false;
                 }
