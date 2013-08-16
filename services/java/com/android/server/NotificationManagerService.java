@@ -2070,12 +2070,13 @@ public class NotificationManagerService extends INotificationManager.Stub
 
                     final int currentUser;
                     final long token = Binder.clearCallingIdentity();
+
                     try {
                         currentUser = ActivityManager.getCurrentUser();
                     } finally {
                         Binder.restoreCallingIdentity(token);
                     }
-
+                    
                     if (notification.icon != 0) {
                         if (old != null && old.statusBarKey != null) {
                             r.statusBarKey = old.statusBarKey;
@@ -2103,10 +2104,8 @@ public class NotificationManagerService extends INotificationManager.Stub
                         if (currentUser == userId) {
                             sendAccessibilityEvent(notification, pkg);
                         }
-
                         notifyPostedLocked(r);
                     } else {
-                        Slog.e(TAG, "Not posting notification with icon==0: " + notification);
                         if (old != null && old.statusBarKey != null) {
                             long identity = Binder.clearCallingIdentity();
                             try {
@@ -2115,13 +2114,8 @@ public class NotificationManagerService extends INotificationManager.Stub
                             finally {
                                 Binder.restoreCallingIdentity(identity);
                             }
-
                             notifyRemovedLocked(r);
                         }
-                        // ATTENTION: in a future release we will bail out here
-                        // so that we do not play sounds, show lights, etc. for invalid notifications
-                        Slog.e(TAG, "WARNING: In a future release this will crash the app: "
-                                + n.getPackageName());
                     }
 
                     // If we're not supposed to beep, vibrate, etc. then don't.
