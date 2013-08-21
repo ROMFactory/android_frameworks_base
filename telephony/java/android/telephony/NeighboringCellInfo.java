@@ -25,8 +25,7 @@ import static android.telephony.TelephonyManager.NETWORK_TYPE_UMTS;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_HSDPA;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_HSUPA;
 import static android.telephony.TelephonyManager.NETWORK_TYPE_HSPA;
-
-
+import static android.telephony.TelephonyManager.NETWORK_TYPE_HSPAP;
 
 /**
  * Represents the neighboring cell information, including
@@ -143,6 +142,7 @@ public class NeighboringCellInfo implements Parcelable
             case NETWORK_TYPE_HSDPA:
             case NETWORK_TYPE_HSUPA:
             case NETWORK_TYPE_HSPA:
+            case NETWORK_TYPE_HSPAP:
                 mNetworkType = radioType;
                 mPsc = Integer.valueOf(location, 16);
                 break;
