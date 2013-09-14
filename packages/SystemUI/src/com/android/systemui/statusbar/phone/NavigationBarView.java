@@ -295,9 +295,10 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         return mInEditMode;
     }
 
-    /* package */ void setListeners(OnClickListener recentsClickListener,
+    /* package */ void setListeners(OnClickListener recentsClickListener, OnLongClickListener recentsLongClickListener,
             OnTouchListener recentsPreloadListener, OnTouchListener homeSearchActionListener) {
         mRecentsClickListener = recentsClickListener;
+        mRecentsLongClickListener = recentsLongClickListener;
         mRecentsPreloadListener = recentsPreloadListener;
         mHomeSearchActionListener = homeSearchActionListener;
         updateButtonListeners();
@@ -319,6 +320,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         View recentView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_RECENT);
         if (recentView != null) {
             recentView.setOnClickListener(mRecentsClickListener);
+            recentView.setOnLongClickListener(mRecentsLongClickListener);
             recentView.setOnTouchListener(mRecentsPreloadListener);
         }
         View homeView = mCurrentView.findViewWithTag(NavbarEditor.NAVBAR_HOME);

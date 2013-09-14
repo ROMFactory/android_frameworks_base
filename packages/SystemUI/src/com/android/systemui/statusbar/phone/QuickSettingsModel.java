@@ -180,7 +180,6 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         }
 
         @Override public void onChange(boolean selfChange) {
-            onLteChanged();
             onMobileNetworkChanged();
         }
 
@@ -216,23 +215,6 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
             cr.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS),
                     false, this, mUserTracker.getCurrentUserId());
-        }
-    }
-
-    /** ContentObserver to watch Network State */
-    private class NetworkObserver extends ContentObserver {
-        public NetworkObserver(Handler handler) {
-            super(handler);
-        }
-
-        @Override public void onChange(boolean selfChange) {
-            onMobileNetworkChanged();
-        }
-
-        public void startObserving() {
-            final ContentResolver cr = mContext.getContentResolver();
-            cr.registerContentObserver(Settings.Global.getUriFor(
-                    Settings.Global.PREFERRED_NETWORK_MODE), false, this);
         }
     }
 

@@ -75,6 +75,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -112,6 +113,7 @@ import com.android.systemui.statusbar.policy.BatteryController;
 import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.DateView;
 import com.android.systemui.statusbar.policy.HeadsUpNotificationView;
+import com.android.systemui.statusbar.policy.KeyButtonView;
 import com.android.systemui.statusbar.policy.LocationController;
 import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
@@ -1030,14 +1032,28 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         return mNaturalBarHeight;
     }
 
+    private boolean mRecentsLongClicked = false;
     private View.OnClickListener mRecentsClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            awakenDreams();
             if(isRecentAppsVisible() && hasRecentApps()) {
                 clearRecentApps();
             } else {
-                toggleRecentApps();
+		if (!mRecentsLongClicked) {
+		    awakenDreams();
+                    toggleRecentApps();
+		} else {
+		    mRecentsLongClicked = false;
+		}
             }
+        }
+    };
+
+    private View.OnLongClickListener mRecentsLongClickListener = new View.OnLongClickListener() {
+        public boolean onLongClick(View v) {
+            awakenDreams();
+            toggleLastApp();
+            mRecentsLongClicked = true;
+            return true;
         }
     };
 
@@ -1083,6 +1099,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         mNavigationBarView.reorient();
 
         mNavigationBarView.setListeners(mRecentsClickListener,
+                mRecentsLongClickListener,
                 mRecentsPreloadOnTouchListener, mHomeSearchActionListener);
         updateSearchPanel();
     }
