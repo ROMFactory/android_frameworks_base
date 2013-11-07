@@ -760,27 +760,28 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private void updateRemoteDisplays() {
         MediaRouter.RouteInfo connectedRoute = mMediaRouter.getSelectedRoute(
                 MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY);
-        boolean enabled = connectedRoute != null
-                && connectedRoute.matchesTypes(MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY);
-        boolean connecting;
-        if (enabled) {
-            connecting = connectedRoute.isConnecting();
-        } else {
+        boolean enabled = connectedRoute != null && (connectedRoute.getSupportedTypes()
+                & MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY) != 0;
+        if (!enabled) {
             connectedRoute = null;
-            connecting = false;
-            enabled = mMediaRouter.isRouteAvailable(MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY,
-                    MediaRouter.AVAILABILITY_FLAG_IGNORE_DEFAULT_ROUTE);
+            final int count = mMediaRouter.getRouteCount();
+            for (int i = 0; i < count; i++) {
+                MediaRouter.RouteInfo route = mMediaRouter.getRouteAt(i);
+                if ((route.getSupportedTypes() & MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY) != 0) {
+                    enabled = true;
+                    break;
+                }
+            }
         }
 
         mRemoteDisplayState.enabled = enabled;
         if (connectedRoute != null) {
             mRemoteDisplayState.label = connectedRoute.getName().toString();
-            mRemoteDisplayState.iconId = connecting ?
-                    R.drawable.ic_qs_cast_connecting : R.drawable.ic_qs_cast_connected;
+            mRemoteDisplayState.iconId = R.drawable.ic_qs_remote_display_connected;
         } else {
             mRemoteDisplayState.label = mContext.getString(
                     R.string.quick_settings_remote_display_no_connection_label);
-            mRemoteDisplayState.iconId = R.drawable.ic_qs_cast_available;
+            mRemoteDisplayState.iconId = R.drawable.ic_qs_remote_display;
         }
         mRemoteDisplayCallback.refreshView(mRemoteDisplayTile, mRemoteDisplayState);
     }
