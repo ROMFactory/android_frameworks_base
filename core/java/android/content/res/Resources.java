@@ -2011,7 +2011,7 @@ public class Resources {
         // simply turning off all preloading), as well as any other configs specified
         // by the caller.
         if (((changingConfigurations&~(ActivityInfo.CONFIG_FONT_SCALE |
-                ActivityInfo.CONFIG_DENSITY)) & ~allowVarying) != 0) {
+                NATIVE_DENSITY_CONFIG)) & ~allowVarying) != 0) {
             String resName;
             try {
                 resName = getResourceName(resourceId);
@@ -2039,6 +2039,8 @@ public class Resources {
 
     static private final int LAYOUT_DIR_CONFIG = ActivityInfo.activityInfoConfigToNative(
             ActivityInfo.CONFIG_LAYOUT_DIRECTION);
+    static private final int NATIVE_DENSITY_CONFIG = ActivityInfo.activityInfoConfigToNative(
+            ActivityInfo.CONFIG_DENSITY);
 
     /** @hide */
     public final void updateStringCache() {
