@@ -2606,8 +2606,14 @@ public final class Settings {
         public static final String VOLUME_WAKE_SCREEN = "volume_wake_screen";
 
         /**
-         * Should the non-intrsive incall ui be used
-         *
+         * Immersive mode global actions switch
+         * 0 = no
+         * 1 = yes
+         * @hide
+         */
+        public static final String IMMERSIVE_MODE = "immersive_mode";
+
+        /**
          * @hide
          */
         public static final String NON_INTRUSIVE_INCALL = "non_intrusive_incall";
