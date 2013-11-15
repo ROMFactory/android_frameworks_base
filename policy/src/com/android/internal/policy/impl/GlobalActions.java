@@ -37,6 +37,7 @@ import android.content.res.TypedArray;
 import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
+import android.Manifest;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -300,8 +301,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     public boolean showBeforeProvisioning() {
                         return true;
                     }
-                }
-            );
+            });
 
             // next: screenshot
             mItems.add(
@@ -319,11 +319,32 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                         return true;
                     }
                 });
+        }
+        // next: screenrecord
+        // only shown if enabled, disabled by default
+        boolean showScreenrecord = Settings.System.getIntForUser(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_SCREENRECORD_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
+        if (showScreenrecord) {
+              mItems.add(
+                  new SinglePressAction(R.drawable.ic_lock_screen_record, R.string.global_action_screen_record) {
+                      public void onPress() {
+                          toggleScreenRecord();
+                      }
+
+                    public boolean showDuringKeyguard() {
+                        return true;
+                    }
+
+                    public boolean showBeforeProvisioning() {
+                        return true;
+                    }
+                });
+        }
 
             // next: bug report, if enabled
-            if (Settings.Secure.getInt(mContext.getContentResolver(),
+        if (Settings.Secure.getInt(mContext.getContentResolver(),
                     Settings.Secure.BUGREPORT_IN_POWER_MENU, 0) != 0) {
-                mItems.add(
+            mItems.add(
                     new SinglePressAction(com.android.internal.R.drawable.stat_sys_adb,
                             R.string.global_action_bug_report) {
 
@@ -377,11 +398,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 mItems.add(mSilentModeAction);
             }
 
-            // one more thing: optionally add a list of users to switch to
-            if (SystemProperties.getBoolean("fw.power_user_switcher", false)) {
-                addUsersToMenu(mItems);
-            }
-        }
 
         mAdapter = new MyAdapter();
 
@@ -501,39 +517,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-    private void addUsersToMenu(ArrayList<Action> items) {
-        List<UserInfo> users = ((UserManager) mContext.getSystemService(Context.USER_SERVICE))
-                .getUsers();
-        if (users.size() > 1) {
-            UserInfo currentUser = getCurrentUser();
-            for (final UserInfo user : users) {
-                boolean isCurrentUser = currentUser == null
-                        ? user.id == 0 : (currentUser.id == user.id);
-                Drawable icon = user.iconPath != null ? Drawable.createFromPath(user.iconPath)
-                        : null;
-                SinglePressAction switchToUser = new SinglePressAction(
-                        com.android.internal.R.drawable.ic_menu_cc, icon,
-                        (user.name != null ? user.name : "Primary")
-                        + (isCurrentUser ? " \u2714" : "")) {
-                    public void onPress() {
-                        try {
-                            ActivityManagerNative.getDefault().switchUser(user.id);
-                        } catch (RemoteException re) {
-                            Log.e(TAG, "Couldn't switch user " + re);
-                        }
-                    }
-
-                    public boolean showDuringKeyguard() {
-                        return true;
-                    }
-
-                    public boolean showBeforeProvisioning() {
-                        return false;
-                    }
-                };
-                items.add(switchToUser);
-            }
-        }
+    private void toggleScreenRecord() {
+        final Intent recordIntent = new Intent("org.chameleonos.action.NOTIFY_RECORD_SERVICE");
+        mContext.sendBroadcast(recordIntent, Manifest.permission.RECORD_SCREEN);
     }
 
     private void createRebootMenuItems() {
@@ -577,6 +563,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             }
         );
     }
+
 
     private void prepareDialog() {
         refreshSilentMode();

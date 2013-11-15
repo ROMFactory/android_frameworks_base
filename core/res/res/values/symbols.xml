@@ -260,6 +260,7 @@
   <java-symbol type="bool" name="config_duplicate_port_omadm_wappush" />
   <java-symbol type="bool" name="config_enable_emergency_call_while_sim_locked" />
   <java-symbol type="bool" name="config_enable_puk_unlock_screen" />
+  <java-symbol type="bool" name="config_enableScreenrecordChord" />
   <java-symbol type="bool" name="config_hotswapCapable" />
   <java-symbol type="bool" name="config_mms_content_disposition_support" />
   <java-symbol type="bool" name="config_showMenuShortcutsWhenKeyboardPresent" />
@@ -1413,6 +1414,7 @@
   <java-symbol type="string" name="global_action_silent_mode_off_status" />
   <java-symbol type="string" name="global_action_silent_mode_on_status" />
   <java-symbol type="string" name="global_action_toggle_silent_mode" />
+  <java-symbol type="string" name="global_action_screen_record" />
   <java-symbol type="string" name="invalidPuk" />
   <java-symbol type="string" name="lockscreen_carrier_default" />
   <java-symbol type="style" name="Animation.LockScreen" />
@@ -1796,9 +1798,12 @@
   <java-symbol type="drawable" name="ic_lock_reboot_recovery" />
   <java-symbol type="drawable" name="ic_lock_reboot_bootloader" />
   <java-symbol type="drawable" name="ic_lock_screenshot" />
+  <java-symbol type="drawable" name="ic_lock_screen_record" />
   <java-symbol type="string" name="global_actions" />
   <java-symbol type="string" name="global_action_reboot" />
   <java-symbol type="string" name="global_action_screenshot" />
   <java-symbol type="string" name="reboot_system" />
   <java-symbol type="string" name="reboot_progress" />
+
+
 </resources>
