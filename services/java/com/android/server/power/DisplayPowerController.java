@@ -366,12 +366,10 @@ final class DisplayPowerController {
     // Twilight changed.  We might recalculate auto-brightness values.
     private boolean mTwilightChanged;
 
+    private Context mContext;
+
     private KeyguardServiceWrapper mKeyguardService;
 
-    // Our context
-    private final Context mContext;
-
-    
     private final ServiceConnection mKeyguardConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -385,7 +383,7 @@ final class DisplayPowerController {
         }
 
     };
-    
+
     /**
      * Creates the display power controller.
      */
@@ -402,6 +400,7 @@ final class DisplayPowerController {
         mDisplayBlanker = displayBlanker;
         mCallbacks = callbacks;
         mCallbackHandler = callbackHandler;
+        mContext = context;
 
         mLights = lights;
         mTwilight = twilight;
@@ -521,8 +520,10 @@ final class DisplayPowerController {
      */
     public boolean requestPowerState(DisplayPowerRequest request,
             boolean waitForNegativeProximity) {
+
         final int MAX_BLUR_WIDTH = 900;
         final int MAX_BLUR_HEIGHT = 1600;
+
         if (DEBUG) {
             Slog.d(TAG, "requestPowerState: "
                     + request + ", waitForNegativeProximity=" + waitForNegativeProximity);
@@ -549,28 +550,33 @@ final class DisplayPowerController {
                 mDisplayReadyLocked = false;
             }
 
-	    boolean seeThrough = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1; 
+            boolean seeThrough = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1;
             if (changed && !mPendingRequestChangedLocked) {
-              if ((mKeyguardService == null || mKeyguardService.isShowing()) &&
-                  request.screenState == DisplayPowerRequest.SCREEN_STATE_OFF &&
+                if ((mKeyguardService == null || !mKeyguardService.isShowing()) &&
+                            request.screenState == DisplayPowerRequest.SCREEN_STATE_OFF &&
                             seeThrough) {
                     DisplayInfo di = mDisplayManager
-                        .getDisplayInfo(mDisplayManager.getDisplayIds() [0]);
-                    final Bitmap bmp = SurfaceControl
-                          .screenshot(di.getNaturalWidth(), di.getNaturalHeight(),0,22000);
-                    if(bmp != null) {
+                            .getDisplayInfo(mDisplayManager.getDisplayIds() [0]);
+                    /* Limit max screenshot capture layer to 22000.
+                       Prevents status bar and navigation bar from being captured.*/ 
+                    Bitmap bmp = SurfaceControl
+                            .screenshot(di.getNaturalWidth(),di.getNaturalHeight(), 0, 22000);
+                    if (bmp != null) {
                         Bitmap tmpBmp = bmp;
+
+                        // scale image if its too large
                         if (bmp.getWidth() > MAX_BLUR_WIDTH) {
-                            tmpBmp = bmp.createScaledBitmap(bmp, MAX_BLUR_WIDTH, MAX_BLUR_HEIGHT, true);
+                                tmpBmp = bmp.createScaledBitmap(bmp, MAX_BLUR_WIDTH, MAX_BLUR_HEIGHT, true);
                         }
+
                         mKeyguardService.setBackgroundBitmap(tmpBmp);
                         bmp.recycle();
                         tmpBmp.recycle();
                     }
                 } else if (!seeThrough) mKeyguardService.setBackgroundBitmap(null);
-                    mPendingRequestChangedLocked = true;
-                    sendUpdatePowerStateLocked();
+                mPendingRequestChangedLocked = true;
+                sendUpdatePowerStateLocked();
             }
 
             return mDisplayReadyLocked;
