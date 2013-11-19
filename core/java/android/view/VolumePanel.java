@@ -127,10 +127,6 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
     private boolean mShouldRunDropTranslucentAnimation = false;
     private boolean mRunningDropTranslucentAnimation = false;
 
-    private boolean mTranslucentDialog = true;
-    private boolean mShouldRunDropTranslucentAnimation = false;
-    private boolean mRunningDropTranslucentAnimation = false;
-
     // True if we want to play tones on the system stream when the master stream is specified.
     private boolean mPlayMasterStreamTones;
 

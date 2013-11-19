@@ -633,20 +633,6 @@ public class AudioService extends IAudioService.Stub {
 		MAX_STREAM_VOLUME[AudioSystem.STREAM_TTS] = 
 			Settings.System.getInt(mContentResolver, "volume_steps_tts", 
 				MAX_STREAM_VOLUME[AudioSystem.STREAM_TTS]);
-	}
-
-    private void initVolumeSteps(){
-        //Defaults for reference
-        //5,  // STREAM_VOICE_CALL
-        //7,  // STREAM_SYSTEM
-        //7,  // STREAM_RING
-        //15, // STREAM_MUSIC
-        //7,  // STREAM_ALARM
-        //7,  // STREAM_NOTIFICATION
-        //15, // STREAM_BLUETOOTH_SCO
-        //7,  // STREAM_SYSTEM_ENFORCED
-        //15, // STREAM_DTMF
-        //15  // STREAM_TTS
 
                 MAX_STREAM_VOLUME[AudioSystem.STREAM_VOICE_CALL] =
                         Settings.System.getInt(mContentResolver, "volume_steps_voice_call",
@@ -1413,10 +1399,6 @@ public class AudioService extends IAudioService.Stub {
     
     protected static void setMaxStreamVolume(int streamType, int maxVol) {
 		MAX_STREAM_VOLUME[streamType] = maxVol;
-    }
-
-    protected static void setMaxStreamVolume(int streamType, int maxVol) {
-                MAX_STREAM_VOLUME[streamType] = maxVol;
     }
 
     /** @see AudioManager#getStreamVolume(int) */

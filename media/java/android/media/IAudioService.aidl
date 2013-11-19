@@ -73,8 +73,6 @@ interface IAudioService {
     
     void setStreamMaxVolume(int streamType, int maxVol);
 
-    void setStreamMaxVolume(int streamType, int maxVol);
-
     int getMasterMaxVolume();
 
     int getLastAudibleStreamVolume(int streamType);

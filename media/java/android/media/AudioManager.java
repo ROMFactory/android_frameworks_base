@@ -757,27 +757,6 @@ public class AudioManager {
             if (mUseMasterVolume) {
                 //service.setMasterMaxVolume(maxVol);
             } else {
-                service.setStreamMaxVolume(streamType,maxVol);
-            }
-        } catch (RemoteException e) {
-            Log.e(TAG, "Dead object in setStreamMaxVolume", e);
-        }
-	}
-
-    /**
-     * Sets the maximum volume index for a particular stream.
-     *
-     * @param streamType The stream type whose maximum volume index is set.
-     * @param maxVol The maximum volume to set range 7 - 45.
-     * @return The maximum valid volume index for the stream.
-     * @see #setStreamVolume(int)
-     */
-    public void setStreamMaxVolume(int streamType, int maxVol) {
-        IAudioService service = getService();
-        try {
-            if (mUseMasterVolume) {
-                //service.setMasterMaxVolume(maxVol);
-            } else {
                 double previousMax = new Integer(getStreamMaxVolume(streamType)).doubleValue();
                 double previousVolume = new Integer(getStreamVolume(streamType)).doubleValue();
                 double newMax = new Integer(maxVol).doubleValue();
