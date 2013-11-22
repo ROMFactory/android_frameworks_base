@@ -16,6 +16,7 @@
 
 package com.android.systemui;
 
+import android.database.ContentObserver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
@@ -32,6 +34,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.View;
@@ -174,7 +177,6 @@ public class BatteryMeterView extends View implements DemoMode {
 
     public BatteryMeterView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
         final Resources res = context.getResources();
         TypedArray levels = res.obtainTypedArray(R.array.batterymeter_color_levels);
         TypedArray colors = res.obtainTypedArray(R.array.batterymeter_color_values);
@@ -187,9 +189,6 @@ public class BatteryMeterView extends View implements DemoMode {
         }
         levels.recycle();
         colors.recycle();
-        mShowPercent = ENABLE_PERCENT;
-// && 0 != Settings.System.getInt(
-//                context.getContentResolver(), "status_bar_show_battery_percent", 0);
 
         mWarningString = context.getString(R.string.battery_meter_very_low_overlay_symbol);
 
@@ -206,8 +205,8 @@ public class BatteryMeterView extends View implements DemoMode {
         mBatteryPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setColor(res.getColor(R.color.batterymeter_text_color));
-        Typeface font = Typeface.create("sans-serif-condensed", Typeface.NORMAL);
+        mTextPaint.setColor(0xFFFFFFFF);
+        Typeface font = Typeface.create("sans-serif", Typeface.BOLD);
         mTextPaint.setTypeface(font);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
 
@@ -224,6 +223,8 @@ public class BatteryMeterView extends View implements DemoMode {
         mBoltPaint.setColor(res.getColor(R.color.batterymeter_bolt_color));
         mBoltPoints = loadBoltPoints(res);
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        updateSettings();
     }
 
     private static float[] loadBoltPoints(Resources res) {
@@ -257,6 +258,17 @@ public class BatteryMeterView extends View implements DemoMode {
             if (percent <= thresh) return color;
         }
         return color;
+    }
+
+    public void updateSettings(){
+        int batteryStyle = Settings.System.getInt(getContext().getContentResolver(),
+                                Settings.System.STATUS_BAR_BATTERY_STYLE, 0);
+
+        mShowPercent = batteryStyle == 1;
+        boolean show = (batteryStyle == 0 || mShowPercent);
+
+        setVisibility(show ? View.VISIBLE : View.GONE);
+        postInvalidate();
     }
 
     @Override
@@ -350,6 +362,7 @@ public class BatteryMeterView extends View implements DemoMode {
                     (SINGLE_DIGIT_PERCENT ? 0.75f
                             : (tracker.level == 100 ? 0.38f : 0.5f)));
             mTextHeight = -mTextPaint.getFontMetrics().ascent;
+            mTextPaint.setShadowLayer(0.7f,1,1, Color.BLACK);
 
             final String str = String.valueOf(SINGLE_DIGIT_PERCENT ? (level/10) : level);
             final float x = mWidth * 0.5f;
