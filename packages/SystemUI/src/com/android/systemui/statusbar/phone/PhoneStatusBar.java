@@ -2588,10 +2588,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
 
         @Override
         public void tickerStarting() {
-            mTicking = true;
             if (!mHaloActive) {
                 mStatusBarContents.setVisibility(View.GONE);
-                mCenterClockLayout.setVisibility(View.GONE);
                 mTickerView.setVisibility(View.VISIBLE);
                 mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_up_in, null));
                 mStatusBarContents.startAnimation(loadAnim(com.android.internal.R.anim.push_up_out, null));
@@ -2985,6 +2983,22 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     };
 
     private View.OnClickListener mHaloButtonListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            // Collapse
+            animateCollapsePanels();
+
+            // Toggle HALO
+            Settings.System.putInt(mContext.getContentResolver(),
+                    Settings.System.HALO_ACTIVE, mHaloActive ? 0 : 1);
+
+            updateHalo();
+
+            // Switch off regular ticker
+            mTickerView.setVisibility(View.GONE);
+        }
+    };
+
+    private View.OnClickListener mClockClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             // Collapse
             animateCollapsePanels();

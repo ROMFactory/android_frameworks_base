@@ -2929,12 +2929,6 @@ public final class Settings {
         public static final String HALO_SIZE = "halo_size";
 
         /**
-         * HALO ninja?, should default to 0 (no, do not disappear when empty)
-         * @hide
-         */
-        public static final String HALO_NINJA = "halo_ninja";
-
-        /**
          * HALO message box?, should default to 1 (yes, show message box on incoming notification)
          * @hide
          */

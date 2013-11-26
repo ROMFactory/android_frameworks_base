@@ -21,7 +21,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.ColorFilter;
@@ -45,8 +44,6 @@ import android.provider.Settings;
 
 import com.android.systemui.R;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class HaloProperties extends FrameLayout {
 
@@ -73,8 +70,6 @@ public class HaloProperties extends FrameLayout {
         PINNED,
         SYSTEM
     }
-
-    private OnClockChangedListener mClockChangedListener;
 
     private Handler mAnimQueue = new Handler();
     private LayoutInflater mInflater;
@@ -431,36 +426,4 @@ public class HaloProperties extends FrameLayout {
 
         mLastContentStateLeft = contentLeft;
     }
-
-    public interface OnClockChangedListener {
-        public abstract void onChange(String s);
-    }
-
-    public void setOnClockChangedListener(OnClockChangedListener l){
-        mClockChangedListener = l;
-    }
-
-    private final BroadcastReceiver mClockReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mClockChangedListener.onChange(getSimpleTime());
-        }
-    };
-
-    public static String getSimpleTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-        String amPm = sdf.format(new Date());
-        return amPm.toUpperCase();
-    }
-
-    public static String getDayofWeek() {
-        SimpleDateFormat dayOfWeek = new SimpleDateFormat("ccc");
-        return dayOfWeek.format(new Date()).toUpperCase();
-    }
-
-    public static String getDayOfMonth() {
-        SimpleDateFormat dayOfMonth = new SimpleDateFormat("dd");
-        return dayOfMonth.format(new Date()).toUpperCase();
-    }
-
 }
