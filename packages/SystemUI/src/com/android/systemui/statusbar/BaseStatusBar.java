@@ -36,6 +36,7 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -44,15 +45,17 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageDataObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.graphics.PixelFormat;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.PixelFormat;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -87,10 +90,16 @@ import android.widget.PopupMenu;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import com.android.internal.statusbar.IStatusBarService;
+import com.android.internal.statusbar.StatusBarIcon;
+import com.android.internal.statusbar.StatusBarIconList;
 import com.android.systemui.statusbar.phone.Ticker;
+import com.android.internal.widget.SizeAdaptiveLayout;
+import com.android.systemui.R;
 import com.android.systemui.RecentsComponent;
 import com.android.systemui.statusbar.phone.KeyguardTouchDelegate;
 import com.android.systemui.statusbar.halo.Halo;
+import com.android.systemui.statusbar.policy.NotificationRowLayout;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -158,7 +167,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     protected boolean mHaloActive;
     public boolean mHaloTaskerActive = false;
     protected ImageView mHaloButton;
-    protected boolean mHaloButtonVisible = true;
 
     // UI-specific methods
 
@@ -369,12 +377,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
     }
 
-    protected void updateHaloButton() {
-        if (mHaloButton != null) {
-            mHaloButton.setVisibility(mHaloButtonVisible && !mHaloActive ? View.VISIBLE : View.GONE);
-        }
-    }
-
     public void restartHalo() {
         if (mHalo != null) {
             mHalo.cleanUp();
@@ -389,12 +391,14 @@ public abstract class BaseStatusBar extends SystemUI implements
         mHaloActive = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.HALO_ACTIVE, 0) == 1;
 
-        updateHaloButton();
+        mHaloButton.setImageResource(mHaloActive
+                ? R.drawable.ic_notify_halo_pressed
+                : R.drawable.ic_notify_halo_normal);
 
         if (mHaloActive) {
             if (mHalo == null) {
                 LayoutInflater inflater = (LayoutInflater) mContext
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 mHalo = (Halo)inflater.inflate(R.layout.halo_trigger, null);
                 mHalo.setLayerType (View.LAYER_TYPE_HARDWARE, null);
                 WindowManager.LayoutParams params = mHalo.getWMParams();

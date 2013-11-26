@@ -5296,19 +5296,17 @@ public class Activity extends ContextThemeWrapper
             // Create our new window
             mWindow = PolicyManager.makeNewWindow(this);
             mWindow.mIsFloatingWindow = true;
-            mWindow.setCloseOnTouchOutsideIfNotSet(false);
-            mWindow.setGravity(Gravity.TOP | Gravity.LEFT);
-            
-            //if (android.os.Process.myUid() == android.os.Process.SYSTEM_UID) {
-            int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-                mWindow.setFlags(flags, flags);
+            mWindow.setCloseOnTouchOutsideIfNotSet(true);
+            mWindow.setGravity(Gravity.CENTER);
+
+            if (android.os.Process.myUid() == android.os.Process.SYSTEM_UID) {
+                mWindow.setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND,
+                        WindowManager.LayoutParams.FLAG_DIM_BEHIND);
                 WindowManager.LayoutParams params = mWindow.getAttributes();
                 params.alpha = 1f;
-                //params.dimAmount = 0.25f;
-                //params.x = 10;
-                //params.y = 10;
-                mWindow.setAttributes(params);
-            //}
+                params.dimAmount = 0.25f;
+                mWindow.setAttributes((android.view.WindowManager.LayoutParams) params);
+            }
 
             // Scale it
             scaleFloatingWindow(context);
@@ -5334,12 +5332,11 @@ public class Activity extends ContextThemeWrapper
         Display display = wm.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
-        boolean portrait = metrics.heightPixels > metrics.widthPixels;
-        int width = (int)(metrics.widthPixels * (portrait ? 0.9f : 0.7f));
-        int height = (int)(metrics.heightPixels * (portrait ? 0.7f : 0.9f));
-        int x = (metrics.widthPixels - width) / 2;
-        int y = (metrics.heightPixels - height) / 2;
-        mWindow.setLayout(x, y, width, height);
+        if (metrics.heightPixels > metrics.widthPixels) {
+            mWindow.setLayout((int)(metrics.widthPixels * 0.9f), (int)(metrics.heightPixels * 0.7f));
+        } else {
+            mWindow.setLayout((int)(metrics.widthPixels * 0.7f), (int)(metrics.heightPixels * 0.8f));
+        }
     }
 
     /** @hide */

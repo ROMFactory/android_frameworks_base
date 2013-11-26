@@ -21,10 +21,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
-import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuff.Mode;
 import android.os.BatteryManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -33,7 +37,9 @@ import android.widget.TextView;
 import android.widget.RelativeLayout;
 import android.widget.LinearLayout;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.util.TypedValue;
 import android.provider.Settings;
 
@@ -42,11 +48,7 @@ import com.android.systemui.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.android.systemui.statusbar.policy.BatteryController.BatteryStateChangeCallback;
-import com.android.systemui.statusbar.policy.NetworkController;
-import com.android.systemui.statusbar.policy.NetworkController.NetworkSignalChangedCallback;
-
-public class HaloProperties extends FrameLayout implements BatteryStateChangeCallback, NetworkSignalChangedCallback {
+public class HaloProperties extends FrameLayout {
 
     public enum Overlay {
         NONE,
@@ -82,21 +84,6 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
     protected float mHaloContentAlpha = 0;
     private int mHaloContentHeight = 0;
     private int mMsgCount, mValue;
-    private int mBatteryLevel = 0;
-    private boolean mCharging = false;
-    private boolean airPlaneMode;
-
-    private boolean mConnected = true;
-    private boolean mWifiConnected;
-    private boolean mWifiNotConnected;
-    private int mWifiSignalIconId;
-    private int mSignalStrenghtId;
-    private String mLabel;
-    private String mWifiLabel;
-    private String signalContentDescription;
-    private String dataContentDescription;
-
-    private ConnectivityManager mCm;
 
     private Drawable mHaloDismiss;
     private Drawable mHaloBackL;
@@ -138,7 +125,6 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         mHaloDismiss = mContext.getResources().getDrawable(R.drawable.halo_dismiss);
         mHaloBackL = mContext.getResources().getDrawable(R.drawable.halo_back_left);
         mHaloBackR = mContext.getResources().getDrawable(R.drawable.halo_back_right);
-        mHaloBlackX = mContext.getResources().getDrawable(R.drawable.halo_black_x);
         mHaloClearAll = mContext.getResources().getDrawable(R.drawable.halo_clear_all);
         mHaloSilenceL = mContext.getResources().getDrawable(R.drawable.halo_silence_left);
         mHaloSilenceR = mContext.getResources().getDrawable(R.drawable.halo_silence_right);
@@ -179,14 +165,6 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         setHaloSize(mFraction);
 
         mHaloOverlayAnimator = new CustomObjectAnimator(this);
-
-        mContext.registerReceiver(mBatteryReceiver,
-                new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
-        NetworkController controller = new NetworkController(mContext);
-        controller.addNetworkSignalChangedCallback(this);
-
-        mCm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     int newPaddingHShort;
@@ -204,7 +182,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         newPaddingHShort = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_short) * fraction);
         newPaddingHWide = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_hpadding_wide) * fraction);
         newPaddingVTop = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_top) * fraction);
-        newPaddingVBottom = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_bottom) * fraction);        
+        newPaddingVBottom = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_speech_vpadding_bottom) * fraction);
 
         final int newBatchSize = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_number_size) * fraction);
         final int newBatchIconSize = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_number_icon_size) * fraction);
@@ -236,7 +214,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
     }
 
     public int getHaloX() {
-        return mHaloX; 
+        return mHaloX;
     }
 
     public int getHaloY() {
@@ -248,7 +226,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
     }
 
     public int getHaloContentY() {
-        return mHaloContentY; 
+        return mHaloContentY;
     }
 
     protected CustomObjectAnimator msgNumberFlipAnimator = new CustomObjectAnimator(this);
@@ -312,7 +290,7 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
                         mHaloNumberContainer.setAlpha(1f);
                         mHaloNumber.setAlpha(1f);
                     }
-                    
+
                     if (mValue < 1 && mMsgCount < 1) {
                         msgNumberAlphaAnimator.animate(ObjectAnimator.ofFloat(mHaloNumberContainer, "alpha", 0f).setDuration(1000),
                                 new DecelerateInterpolator(), null, 1500, null);
@@ -485,150 +463,4 @@ public class HaloProperties extends FrameLayout implements BatteryStateChangeCal
         return dayOfMonth.format(new Date()).toUpperCase();
     }
 
-    @Override
-    public void onBatteryLevelChanged(int level, boolean pluggedIn) {
-        mBatteryLevel = level;
-        mCharging = pluggedIn;
-    }
-
-    private BroadcastReceiver mBatteryReceiver = new BroadcastReceiver(){
-        @Override
-        public void onReceive(Context arg0, Intent intent) {
-            mBatteryLevel = intent.getIntExtra("level", 0);
-            mCharging = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
-        }
-    };
-
-    public int getBatteryLevel() {
-        return mBatteryLevel;
-    }
-
-    public boolean getBatteryStatus() {
-        return mCharging;
-    }
-
-    @Override
-    public void onAirplaneModeChanged(boolean enabled) {
-        airPlaneMode = enabled;
-    }
-
-    public boolean getAirplaneModeStatus(){
-        if (!mCm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE) && mWifiConnected) return false;
-        return airPlaneMode;
-    }
-
-    @Override
-    public void onWifiSignalChanged(boolean enabled, int wifiSignalIconId,
-                boolean activityIn, boolean activityOut,
-                String wifiSignalContentDescriptionId, String description) {
-        mWifiConnected = enabled && (wifiSignalIconId > 0) && (description != null);
-        mWifiNotConnected = (wifiSignalIconId > 0) && (description == null);
-        mWifiSignalIconId = wifiSignalIconId;
-        mWifiLabel = description;
-    }
-
-    public boolean getWifiStatus(){
-        if (mWifiConnected) return true;
-        if (mWifiNotConnected) return false;
-
-        return false;
-    }
-
-    @Override
-    public void onMobileDataSignalChanged(boolean enabled, int mobileSignalIconId,
-                String mobileSignalContentDescriptionId, int dataTypeIconId,
-                boolean activityIn, boolean activityOut,
-                String dataTypeContentDescriptionId, String description) {
-
-        mSignalStrenghtId = enabled && (mobileSignalIconId > 0)
-                ? mobileSignalIconId
-                : R.drawable.ic_qs_signal_no_signal;
-
-        dataContentDescription = enabled && (dataTypeContentDescriptionId != null) && mCm.getMobileDataEnabled()
-                ? dataTypeContentDescriptionId
-                : mContext.getResources().getString(R.string.accessibility_no_data);
-        mLabel = enabled
-                ? description
-                : mContext.getResources().getString(R.string.quick_settings_rssi_emergency_only);
-    }
-
-    public String getSignalStatus(){
-        if (!mCm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE) && mWifiNotConnected) return "";
-
-        if (!mCm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE)) mSignalStrenghtId = mWifiSignalIconId;
-
-        switch (mSignalStrenghtId) {
-            case R.drawable.ic_qs_signal_0:
-            case R.drawable.ic_qs_signal_full_0:
-            case R.drawable.ic_qs_wifi_0:
-                signalContentDescription = mContext.getResources().getString(R.string.halo_signal_bars_none);
-                break;
-            case R.drawable.ic_qs_signal_1:
-            case R.drawable.ic_qs_signal_full_1:
-            case R.drawable.ic_qs_wifi_1:
-            case R.drawable.ic_qs_wifi_full_1:
-                signalContentDescription = mContext.getResources().getString(R.string.halo_signal_bars_1);
-                break;
-            case R.drawable.ic_qs_signal_2:
-            case R.drawable.ic_qs_signal_full_2:
-            case R.drawable.ic_qs_wifi_2:
-            case R.drawable.ic_qs_wifi_full_2:
-                signalContentDescription = mContext.getResources().getString(R.string.halo_signal_bars_2);
-                break;
-            case R.drawable.ic_qs_signal_3:
-            case R.drawable.ic_qs_signal_full_3:
-            case R.drawable.ic_qs_wifi_3:
-            case R.drawable.ic_qs_wifi_full_3:
-                signalContentDescription = mContext.getResources().getString(R.string.halo_signal_bars_3);
-                break;
-            case R.drawable.ic_qs_signal_4:
-            case R.drawable.ic_qs_signal_full_4:
-            case R.drawable.ic_qs_wifi_4:
-            case R.drawable.ic_qs_wifi_full_4:
-                signalContentDescription = mContext.getResources().getString(R.string.halo_signal_bars_4);
-                break;
-            default:
-                signalContentDescription = mContext.getResources().getString(R.string.halo_signal_bars_none);
-        }
-
-        return removeTrailingPeriod(signalContentDescription);
-    }
-
-    public String getDataStatus() {
-        if (airPlaneMode) dataContentDescription = "";
-        if (mWifiConnected) dataContentDescription = mContext.getResources().getString(R.string.halo_wifi_on);
-
-        return removeTrailingPeriod(dataContentDescription);
-    }
-
-    public String getProvider() {
-        if(mLabel.length()>10) mLabel = mLabel.substring(0,9) + "...";
-        if (mCm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE)) return removeTrailingPeriod(mLabel);
-
-        if(mWifiLabel != null && mWifiLabel.length()>10) mWifiLabel = mWifiLabel.substring(0,9) + "...";
-        if (mWifiNotConnected || mWifiLabel == null) mWifiLabel = mContext.getResources().getString(R.string.halo_wifi_off);
-        if (airPlaneMode && mWifiLabel == null) mWifiLabel = "- - -";
-
-        return mWifiLabel;
-    }
-
-    public boolean getConnectionStatus() {
-        mConnected = true;
-
-        if (mSignalStrenghtId == R.drawable.ic_qs_signal_0 || mSignalStrenghtId == R.drawable.ic_qs_signal_1 ||
-                mSignalStrenghtId == R.drawable.ic_qs_signal_2 || mSignalStrenghtId == R.drawable.ic_qs_signal_3 ||
-                mSignalStrenghtId == R.drawable.ic_qs_signal_4) mConnected = false;
-
-        return mConnected;
-    }
-
-    public static String removeTrailingPeriod(String string) {
-        if (string == null) return null;
-        string = string.trim();
-        final int length = string.length();
-        if (string.endsWith(".")) {
-            string = string.substring(0, length - 1);
-        }
-        return string;
-    }
 }
