@@ -2889,9 +2889,8 @@ public final class Settings {
         public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
 
         /**
-         * Halo pause activities? Default 0 (no)
-         * on large ram, otherwise 1(false)
-         *
+         * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
+         * otherwise it defaults to 1 (yes, do pause)
          * @hide
          */
         public static final String HALO_PAUSE = "halo_pause";

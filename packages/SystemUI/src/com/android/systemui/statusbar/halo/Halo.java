@@ -167,6 +167,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     private boolean mFirstStart = true;
     private boolean mInitialized = false;
     private boolean mTickerLeft = true;
+    private boolean mTickerUpdated = false;
     private boolean mIsNotificationNew = true;
     private boolean mPingNewcomer = false;
     private boolean mOverX = false;
@@ -356,6 +357,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 }
                 updateTriggerPosition(triggerWidth, mEffect.mHaloY);
             } else {
+                mEffect.setHaloX(mTickerLeft ? -mIconSize : mScreenWidth);
                 mEffect.nap(500);
             }
         } else {
@@ -447,7 +449,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                     && mLastNotificationEntry.notification.getNotification() != null
                     && mLastNotificationEntry.notification.getNotification().tickerText != null) {
                 mNotificationText = mLastNotificationEntry.notification.getNotification()
-                .tickerText.toString();
+                 .tickerText.toString();
             }
 
             tick(mLastNotificationEntry, 0, 0, false, false);
@@ -1435,6 +1437,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
     // This is the android ticker callback
     public void updateTicker(StatusBarNotification notification, String text) {
+        mTickerUpdated = true;
         boolean allowed = false; // default off
         try {
             allowed = mNotificationManager.isPackageAllowedForHalo(notification.getPackageName());
@@ -1444,13 +1447,14 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
         if (allowed) {
             for (int i = 0; i < mNotificationData.size(); i++) {
                 NotificationData.Entry entry = mNotificationData.get(i);
-                if (entry.notification == notification) {
+                if (entry.notification.toString().equals(notification.toString())) {
                     // No intent, no tick ...
                     if (entry.notification.getNotification().contentIntent == null) return;
 
                     mIsNotificationNew = true;
                     if (mLastNotificationEntry != null 
-                        && notification == mLastNotificationEntry.notification) {
+                        && notification.toString()
+                                        .equals(mLastNotificationEntry.notification.toString())) {
                         // Ok, this is the same notification
                         // Let's give it a chance though, if the text has changed we allow it
                         mIsNotificationNew = !mNotificationText.equals(text);
@@ -1557,6 +1561,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
         @Override
         public void onNotificationPosted(StatusBarNotification notification) throws RemoteException {
+            final StatusBarNotification n = notification;
             boolean allowed = false;
 
             if (mKeyguardManager.isKeyguardLocked() && notification.isClearable()) {
@@ -1568,6 +1573,36 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                 }
                 if (allowed) mPingNewcomer = true;
             }
+
+            mHandler.postDelayed(new Runnable() {
+                public void run() {
+                    ApplicationInfo ai;
+                    NotificationData.Entry entry = null;
+
+                    // if notification received and not registered by HALO ...
+                    if(!mTickerUpdated){
+                        for (int i = 0; i < mNotificationData.size(); i++) {
+                            if(mNotificationData.get(i).notification.toString().equals(n.toString()))
+                                entry = mNotificationData.get(i);
+                        }
+
+                        if(entry != null){
+                            try {
+                                ai = mPm.getApplicationInfo( entry.notification.getPackageName(), 0);
+                            } catch (final NameNotFoundException e) {
+                                ai = null;
+                            }
+                            String text = (String) (ai != null ? mPm.getApplicationLabel(ai) : "...");
+
+                            if (entry.notification.getNotification().tickerText != null) {
+                                text = entry.notification.getNotification().tickerText.toString();
+                            }
+                            updateTicker(n, text);
+                        }
+                    }
+                    mTickerUpdated = false;
+                }
+            }, 300);
         }
 
         @Override
