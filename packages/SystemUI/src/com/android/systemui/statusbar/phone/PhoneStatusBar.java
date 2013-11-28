@@ -155,10 +155,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     private static final int BRIGHTNESS_CONTROL_LONG_PRESS_TIMEOUT = 750; // ms
     private static final int BRIGHTNESS_CONTROL_LINGER_THRESHOLD = 20;
 
-    private static final float BRIGHTNESS_CONTROL_PADDING = 0.15f;
-    private static final int BRIGHTNESS_CONTROL_LONG_PRESS_TIMEOUT = 750; // ms
-    private static final int BRIGHTNESS_CONTROL_LINGER_THRESHOLD = 20;
-
     // fling gesture tuning parameters, scaled to display density
     private float mSelfExpandVelocityPx; // classic value: 2000px/s
     private float mSelfCollapseVelocityPx; // classic value: 2000px/s (will be negated to collapse "up")
@@ -290,15 +286,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     private boolean mRecreating = false;
     private StatusHeaderMachine mStatusHeaderMachine;
     private Runnable mStatusHeaderUpdater;
-
-    private boolean mBrightnessControl;
-    private float mScreenWidth;
-    private int mMinBrightness;
-    private int mPeekHeight;
-    private boolean mJustPeeked;
-    int mLinger;
-    int mInitialTouchX;
-    int mInitialTouchY;
 
     // for disabling the status bar
     int mDisabled = 0;
