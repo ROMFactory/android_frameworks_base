@@ -39,4 +39,38 @@
     <string name="quick_settings_immersive_mode_label">Immersive</string>
     <!-- QuickSettings: Immersive mode (Off) [CHAR LIMIT=NONE] -->
     <string name="quick_settings_immersive_mode_off_label">Immersive Off</string>
+
+    <!-- Title for application screenshot permission request -->
+    <string name="screenshot_permission_title">Capture Screenshot</string>
+
+    <!-- Prompt for the Screenshot permission dialog [CHAR LIMIT=80] -->
+    <string name="screenshot_permission_prompt">Allow the app <xliff:g id="application">%1$s</xliff:g> to capture a screenshot?</string>
+
+    <!--Screenshot delete -->
+    <string name="screenshot_delete_action">Delete</string>
+
+    <!-- Title for application screen recording permission request -->
+    <string name="screenrecord_permission_title">Start Screen Recording</string>
+
+    <!-- Prompt for the screen recording permission dialog [CHAR LIMIT=80] -->
+    <string name="screenrecord_permission_prompt">Allow the app <xliff:g id="application">%1$s</xliff:g> to start a screen recording?</string>
+
+    <string name="notification_recording_title">Screen recording in progress</string>
+    <string name="notification_recording_text">Touch to stop recording</string>
+    <string name="notification_recording_ticker_text">Screen recording started</string>
+
+    <string name="notification_recording_finished_title">Screen recording saved</string>
+    <string name="notification_recording_finished_text">Touch to view %s</string>
+    <string name="notification_recording_finished_ticker_text">Screen recording successful</string>
+
+    <string name="notification_recording_error_title">Screen recorder error</string>
+    <string name="notification_recording_error_text">%s</string>
+
+    <string name="error_unable_to_create_directory">Unable to create output directory.</string>
+    <string name="error_external_storage_unavailable">No external storage available.</string>
+    <string name="error_unable_to_start">Unable to start recording.</string>
+
+    <!-- Quick Setting strings -->
+    <string name="quick_settings_screenrecord_label">Screenrecord</string>
+
 </resources>
