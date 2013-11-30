@@ -2287,8 +2287,13 @@ public final class Settings {
         public static final String VOLUME_LINK_NOTIFICATION = "volume_link_notification";
 
         /**
+         * Show ScreenRecord in Power Menu
+         * @hide
+         */
+        public static final String SCREENRECORD_IN_POWER_MENU = "screenrecord_in_power_menu";
+
+        /**
          * Volume Adjust Sounds Enable, This is the noise made when using volume hard buttons
-         * Defaults to 1 - sounds enabled
          * @hide
          */
         public static final String VOLUME_ADJUST_SOUNDS_ENABLED = "volume_adjust_sounds_enabled";
