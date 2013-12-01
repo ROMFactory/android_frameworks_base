@@ -2555,6 +2555,13 @@ public final class Settings {
         public static final String VOLUME_WAKE_SCREEN = "volume_wake_screen";
 
         /**
+         * Should the non-intrsive incall ui be used
+         *
+         * @hide
+         */
+        public static final String NON_INTRUSIVE_INCALL = "non_intrusive_incall";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
