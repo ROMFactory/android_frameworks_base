@@ -1330,4 +1330,6 @@
     <!-- Enable statusbar double tap gesture to put device to sleep -->
     <bool name="config_disableDoubleTapSleepGesture">false</bool>
 
+   <integer name="config_backKillTimeout">1500</integer>
+
 </resources>
