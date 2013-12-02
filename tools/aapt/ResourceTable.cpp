@@ -16,7 +16,7 @@
 
 #define NOISY(x) //x
 
-boolean debug = false;
+bool debug = false;
 status_t compileXmlFile(const sp<AaptAssets>& assets,
                         const sp<AaptFile>& target,
                         ResourceTable* table,
