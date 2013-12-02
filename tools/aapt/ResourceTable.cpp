@@ -16,6 +16,7 @@
 
 #define NOISY(x) //x
 
+boolean debug = false;
 status_t compileXmlFile(const sp<AaptAssets>& assets,
                         const sp<AaptFile>& target,
                         ResourceTable* table,
@@ -2627,7 +2628,7 @@ ResourceTable::validateLocalizations(void)
                         // consider that string to have fulfilled the localization requirement.
                         String8 region(config.string(), 2);
                         if (configSet.find(region) == configSet.end()) {
-                            if (configSet.count(defaultLocale) == 0) {
+                            if (debug &&(configSet.count(defaultLocale) == 0)) {
                                 fprintf(stdout, "aapt: warning: "
                                         "**** string '%s' has no default or required localization "
                                         "for '%s' in %s\n",
