@@ -760,22 +760,16 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private void updateRemoteDisplays() {
         MediaRouter.RouteInfo connectedRoute = mMediaRouter.getSelectedRoute(
                 MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY);
-        boolean enabled = connectedRoute != null && (connectedRoute.getSupportedTypes()
-                & MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY) != 0;
+        boolean enabled = connectedRoute != null 
+                && connectedRoute.matchesTypes(MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY);
         boolean connecting;
         if (enabled) {
             connecting = connectedRoute.isConnecting();
         } else {
             connectedRoute = null;
             connecting = false;
-            final int count = mMediaRouter.getRouteCount();
-            for (int i = 0; i < count; i++) {
-                MediaRouter.RouteInfo route = mMediaRouter.getRouteAt(i);
-                if ((route.getSupportedTypes() & MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY) != 0) {
-                    enabled = true;
-                    break;
-                }
-            }
+          enabled = mMediaRouter.isRouteAvailable(MediaRouter.ROUTE_TYPE_REMOTE_DISPLAY,
+                    MediaRouter.AVAILABILITY_FLAG_IGNORE_DEFAULT_ROUTE);
         }
 
         mRemoteDisplayState.enabled = enabled;

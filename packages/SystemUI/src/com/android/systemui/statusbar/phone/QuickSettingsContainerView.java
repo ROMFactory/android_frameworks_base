@@ -30,6 +30,7 @@ import android.widget.FrameLayout;
 
 import com.android.systemui.R;
 
+import java.lang.NullPointerException;
 import java.util.ArrayList;
 
 /**
@@ -208,10 +209,15 @@ class QuickSettingsContainerView extends FrameLayout {
                 qs.setEditMode(enabled);
 
                 // Add to provider string
-                if(!enabled && qs.getVisibility() == View.VISIBLE
-                        && !qs.isTemporary()) {
-                    tiles.add(qs.getTileId().toString());
-                }
+		try {
+                   if(!enabled && qs.getVisibility() == View.VISIBLE
+                           && !qs.isTemporary() && tiles != null && qs != null
+				&& qs.getTileId() != null ) {
+                       tiles.add(qs.getTileId().toString());
+                   }
+               } catch (NullPointerException e) {
+               }
+                   
             }
         }
 
