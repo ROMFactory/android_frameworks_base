@@ -58,6 +58,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.IPowerManager;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.SystemClock;
@@ -785,6 +786,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
             }
         }
 
+        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        mBroadcastReceiver.onReceive(mContext,
+                new Intent(pm.isScreenOn() ? Intent.ACTION_SCREEN_ON : Intent.ACTION_SCREEN_OFF));
+
         // receive broadcasts
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
@@ -858,14 +863,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     @Override
     protected void onShowSearchPanel() {
         if (mNavigationBarView != null) {
-            mNavigationBarView.transitionCameraAndSearchButtonAlpha(0.0f);
+            mNavigationBarView.getBarTransitions().setContentVisible(false);
         }
     }
 
     @Override
     protected void onHideSearchPanel() {
         if (mNavigationBarView != null) {
-            mNavigationBarView.transitionCameraAndSearchButtonAlpha(1.0f);
+            mNavigationBarView.getBarTransitions().setContentVisible(true);
         }
     }
 
@@ -1015,7 +1020,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
     }
 
     private void repositionNavigationBar() {
-        if (mNavigationBarView == null) return;
+        if (mNavigationBarView == null || !mNavigationBarView.isAttachedToWindow()) return;
 
         prepareNavigationBarView();
 
@@ -2150,8 +2155,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         return mGestureRec;
     }
 
-    @Override // CommandQueue
-    public void setNavigationIconHints(int hints) {
+    private void setNavigationIconHints(int hints) {
         if (hints == mNavigationIconHints) return;
 
         mNavigationIconHints = hints;
@@ -2288,6 +2292,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         transitions.transitionTo(mode, anim);
     }
 
+    private void finishBarAnimations() {
+        mStatusBarView.getBarTransitions().finishAnimations();
+        if (mNavigationBarView != null) {
+            mNavigationBarView.getBarTransitions().finishAnimations();
+        }
+    }
+
     private final Runnable mCheckBarModes = new Runnable() {
         @Override
         public void run() {
@@ -2382,7 +2393,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         boolean altBack = (backDisposition == InputMethodService.BACK_DISPOSITION_WILL_DISMISS)
             || ((vis & InputMethodService.IME_VISIBLE) != 0);
 
-        mCommandQueue.setNavigationIconHints(
+        setNavigationIconHints(
                 altBack ? (mNavigationIconHints | NAVIGATION_HINT_BACK_ALT)
                         : (mNavigationIconHints & ~NAVIGATION_HINT_BACK_ALT));
         if (mQS != null) mQS.setImeWindowStatus(vis > 0);
@@ -2438,9 +2449,12 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         }
 
         public void tickerHalting() {
-            mStatusBarContents.setVisibility(View.VISIBLE);
+            if (mStatusBarContents.getVisibility() != View.VISIBLE) {
+                mStatusBarContents.setVisibility(View.VISIBLE);
+                mStatusBarContents
+                        .startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
+            }
             mTickerView.setVisibility(View.GONE);
-            mStatusBarContents.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
             // we do not animate the ticker away at this point, just get rid of it (b/6992707)
         }
     }
@@ -2799,6 +2813,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
                 makeExpandedInvisible();
                 notifyNavigationBarScreenOn(false);
                 notifyHeadsUpScreenOn(false);
+                finishBarAnimations();
             }
             else if (Intent.ACTION_SCREEN_ON.equals(action)) {
                 mScreenOn = true;
