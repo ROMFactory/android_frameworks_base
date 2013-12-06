@@ -350,7 +350,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
         if(button == NavigationCallback.NAVBAR_BACK_HINT) {
             ((ImageView)getBackButton()).setImageDrawable(
-                (0 != (hints & backAlt))
+                (backAlt)
                     ? (mVertical ? mBackAltLandIcon : mBackAltIcon)
                     : (mVertical ? mBackLandIcon : mBackIcon));
         } else if (button == NavigationCallback.NAVBAR_RECENTS_HINT) {
