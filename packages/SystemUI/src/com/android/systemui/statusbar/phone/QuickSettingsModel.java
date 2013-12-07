@@ -285,6 +285,10 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private RefreshCallback mLocationCallback;
     private State mLocationState = new State();
 
+    private QuickSettingsTileView mLightbulbTile;
+    private RefreshCallback mLightbulbCallback;
+    private State mLightbulbState = new State();
+
     private QuickSettingsTileView mImeTile;
     private RefreshCallback mImeCallback = null;
     private State mImeState = new State();
@@ -355,6 +359,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         refreshRotationLockTile();
         refreshRssiTile();
         refreshLocationTile();
+        refreshLightbulbTile();
     }
 
     // Settings
