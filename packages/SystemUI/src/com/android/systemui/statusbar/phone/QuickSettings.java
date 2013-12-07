@@ -106,8 +106,7 @@ class QuickSettings {
         AIRPLANE,
         BLUETOOTH,
         LOCATION,
-        IMMERSIVE,
-        SCREENRECORD
+        IMMERSIVE
     }
 
     public static final String NO_TILES = "NO_TILES";
@@ -115,7 +114,7 @@ class QuickSettings {
     public static final String DEFAULT_TILES = Tile.USER + DELIMITER + Tile.BRIGHTNESS
         + DELIMITER + Tile.SETTINGS + DELIMITER + Tile.WIFI + DELIMITER + Tile.RSSI
         + DELIMITER + Tile.ROTATION + DELIMITER + Tile.BATTERY + DELIMITER + Tile.BLUETOOTH
-        + DELIMITER + Tile.LOCATION + DELIMITER + Tile.IMMERSIVE + DELIMITER + Tile.SCREENRECORD;
+        + DELIMITER + Tile.LOCATION + DELIMITER + Tile.IMMERSIVE;
 
     private Context mContext;
     private PanelBar mBar;
@@ -867,26 +866,6 @@ class QuickSettings {
                     });
                     parent.addView(immersiveTile);
                     if(addMissing) immersiveTile.setVisibility(View.GONE);
-
-                } else if (Tile.SCREENRECORD.toString().equals(tile.toString())) { // Screenrecord
-                    final QuickSettingsBasicTile screenRecordTile = new QuickSettingsBasicTile(mContext);
-                    screenRecordTile.setTileId(Tile.SCREENRECORD);
-                    screenRecordTile.setImageResource(R.drawable.ic_qs_screenrecord);
-                    screenRecordTile.setTextResource(R.string.quick_settings_screenrecord_label);
-                    screenRecordTile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                        public void onClick(View v) {
-                            collapsePanels();
-			                mHandler.postDelayed(new Runnable() {
-                                public void run() {
-                                    Intent intent = new Intent(Intent.ACTION_SCREENRECORD);
-                                    mContext.sendBroadcast(intent);
-                                }
-                            }, 500);
-                        }
-                    });
-                    parent.addView(screenRecordTile);
-                    if(addMissing) screenRecordTile.setVisibility(View.GONE);
                 }
             }
         }

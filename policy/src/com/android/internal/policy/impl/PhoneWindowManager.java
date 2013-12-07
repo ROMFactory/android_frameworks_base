@@ -1,5 +1,4 @@
 /*
- * This code has been modified. Portions copyright (C) 2013, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -949,12 +948,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // register for multiuser-relevant broadcasts
         filter = new IntentFilter(Intent.ACTION_USER_SWITCHED);
         context.registerReceiver(mMultiuserReceiver, filter);
-
-        // register for phonewindowmanager related broadcasts 	951
-        filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREENSHOT);
-        filter.addAction(Intent.ACTION_SCREENRECORD);
-        context.registerReceiver(mPhoneWindowManagerReceiver, filter);
 
         // monitor for system gestures
         mSystemGestures = new SystemGesturesPointerEventListener(context,
@@ -4315,22 +4308,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mLastSystemUiFlags = 0;
                     updateSystemUiVisibilityLw();
                 }
-            }
-        }
-    };
-
-    BroadcastReceiver mPhoneWindowManagerReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_SCREENSHOT.equals(intent.getAction())) {
-                takeScreenshot();
-            } else if (Intent.ACTION_SCREENRECORD.equals(intent.getAction())) {
-                ComponentName cn = new ComponentName("com.android.systemui",
-                            "com.android.systemui.screenrecord.TakeScreenRecordService");
-                Intent serviceIntent = new Intent();
-                serviceIntent.setComponent(cn);
-                serviceIntent.setAction(Intent.ACTION_SCREENRECORD);
-                context.startService(serviceIntent);
             }
         }
     };
