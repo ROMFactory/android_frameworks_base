@@ -2507,22 +2507,12 @@ public final class Settings {
         public static final String SIP_ASK_ME_EACH_TIME = "SIP_ASK_ME_EACH_TIME";
 
         /**
-<<<<<<< HEAD
-         * Pointer speed setting.
-         * This is an integer value in a range between -7 and +7, so there are 15 possible values.
-         *   -7 = slowest
-         *    0 = default speed
-         *   +7 = fastest
-=======
          * Whether power menu screen record is enabled
          * @hide
          */
         public static final String POWER_MENU_SCREENRECORD_ENABLED = "power_menu_screenrecord_enabled";
 
         /**
-         * Enable Stylus Gestures
-         *
->>>>>>> 10cb810... Add global action for screen recording. [1/2]
          * @hide
          */
         public static final String POINTER_SPEED = "pointer_speed";
