@@ -1830,4 +1830,8 @@
   <java-symbol type="drawable" name="ic_navigation_ring_torch_on" />
   <java-symbol type="drawable" name="ic_navigation_ring_torch_off" />
   <java-symbol type="drawable" name="ic_navigation_ring_vibrate" />
+
+  <!-- Statusbar double tap gesture -->
+  <java-symbol type="bool" name="config_disableDoubleTapSleepGesture" />
+
 </resources>

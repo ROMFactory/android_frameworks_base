@@ -1326,5 +1326,8 @@
 
     <!-- Boolean to enable adb by default on a per-device basis -->
     <bool name="config_enableAdbByDefault">false</bool>
+    
+    <!-- Enable statusbar double tap gesture to put device to sleep -->
+    <bool name="config_disableDoubleTapSleepGesture">false</bool>
 
 </resources>
