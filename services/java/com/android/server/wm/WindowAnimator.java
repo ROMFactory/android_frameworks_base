@@ -252,7 +252,7 @@ public class WindowAnimator {
                                 mForceHiding = KEYGUARD_SHOWN;
                             }
                         } else {
-                            mForceHiding = win.isDrawnLw() ? KEYGUARD_SHOWN : KEYGUARD_NOT_SHOWN;
+                            mForceHiding = KEYGUARD_SHOWN;
                         }
                     }
                     if (WindowManagerService.DEBUG_VISIBILITY) Slog.v(TAG,
