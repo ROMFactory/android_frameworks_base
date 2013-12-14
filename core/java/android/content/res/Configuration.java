@@ -415,28 +415,24 @@ public final class Configuration implements Parcelable, Comparable<Configuration
      * ui theme mode framework
      * resource qualifier.
      * value indicating that no mode has been set.
-     * @hide
     */
     public static final int UI_THEME_MODE_UNDEFINED = 0;
     /** Constant for {@link #uiThemeMode}
      * value that corresponds to the
      * stock themed framework
      * resource qualifier.
-     * @hide
     */
     public static final int UI_THEME_MODE_NORMAL = 1;
     /** Constant for {@link #uiThemeMode}
      * value that corresponds to the
      * dark themed framework
      * resource qualifier.
-     * @hide
     */
     public static final int UI_THEME_MODE_HOLO_DARK = 2;
     /** Constant for {@link #uiThemeMode}
      * value that corresponds to the
      * light themed framework
      * resource qualifier.
-     * @hide
     */
     public static final int UI_THEME_MODE_HOLO_LIGHT = 3;
 
@@ -445,7 +441,6 @@ public final class Configuration implements Parcelable, Comparable<Configuration
      * This may be one of {@link #UI_THEME_MODE_UNDEFINED},
      * {@link #UI_THEME_MODE_NORMAL},
      * {@link #UI_THEME_MODE_HOLO_DARK}, {@link #UI_THEME_MODE_HOLO_LIGHT},
-     * @hide
      */
     public int uiThemeMode;
 
