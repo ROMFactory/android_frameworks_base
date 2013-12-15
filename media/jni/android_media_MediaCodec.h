@@ -19,6 +19,7 @@
 
 #include "jni.h"
 
+#include <gui/ISurfaceComposer.h>
 #include <media/hardware/CryptoAPI.h>
 #include <media/stagefright/foundation/ABase.h>
 #include <utils/Errors.h>
@@ -44,6 +45,11 @@ struct JMediaCodec : public RefBase {
     status_t configure(
             const sp<AMessage> &format,
             const sp<IGraphicBufferProducer> &bufferProducer,
+            const sp<ICrypto> &crypto,
+            int flags);
+
+    status_t configureForDisplayCapture(
+            const sp<AMessage> &format,
             const sp<ICrypto> &crypto,
             int flags);
 
@@ -101,6 +107,12 @@ private:
 
     sp<ALooper> mLooper;
     sp<MediaCodec> mCodec;
+
+    bool mCapturingDisplay;
+    sp<IBinder> mDpy;
+
+    status_t prepareVirtualDisplay(const int32_t width, const int32_t height,
+            const sp<IGraphicBufferProducer> &bufferProducer);
 
     DISALLOW_EVIL_CONSTRUCTORS(JMediaCodec);
 };

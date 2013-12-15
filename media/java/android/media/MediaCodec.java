@@ -262,9 +262,48 @@ final public class MediaCodec {
         native_configure(keys, values, surface, crypto, flags);
     }
 
+    /**
+     * Configures a component.
+     *
+     * @param format The format of the input data (decoder) or the desired
+     *               format of the output data (encoder).
+     * @param crypto  Specify a crypto object to facilitate secure decryption
+     *                of the media data.
+     * @param flags   Specify {@link #CONFIGURE_FLAG_ENCODE} to configure the
+     *                component as an encoder.
+     *
+     * @hide
+     */
+    public void configureForDisplayCapture(
+            MediaFormat format,
+            MediaCrypto crypto, int flags) {
+        Map<String, Object> formatMap = format.getMap();
+
+        String[] keys = null;
+        Object[] values = null;
+
+        if (format != null) {
+            keys = new String[formatMap.size()];
+            values = new Object[formatMap.size()];
+
+            int i = 0;
+            for (Map.Entry<String, Object> entry: formatMap.entrySet()) {
+                keys[i] = entry.getKey();
+                values[i] = entry.getValue();
+                ++i;
+            }
+        }
+
+        native_configureForDisplayCapture(keys, values, crypto, flags);
+    }
+
     private native final void native_configure(
             String[] keys, Object[] values,
             Surface surface, MediaCrypto crypto, int flags);
+
+    private native final void native_configureForDisplayCapture(
+            String[] keys, Object[] values,
+            MediaCrypto crypto, int flags);
 
     /**
      * Requests a Surface to use as the input to an encoder, in place of input buffers.  This

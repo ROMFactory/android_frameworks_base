@@ -28,6 +28,9 @@
 #include "JNIHelp.h"
 
 #include <gui/Surface.h>
+#include <gui/SurfaceComposerClient.h>
+#include <gui/ISurfaceComposer.h>
+#include <ui/DisplayInfo.h>
 
 #include <media/ICrypto.h>
 #include <media/stagefright/MediaCodec.h>
@@ -103,6 +106,9 @@ status_t JMediaCodec::initCheck() const {
 
 JMediaCodec::~JMediaCodec() {
     if (mCodec != NULL) {
+        if (mCapturingDisplay) {
+            SurfaceComposerClient::destroyDisplay(mDpy);
+        }
         mCodec->release();
         mCodec.clear();
     }
@@ -128,6 +134,41 @@ status_t JMediaCodec::configure(
     }
 
     return mCodec->configure(format, mSurfaceTextureClient, crypto, flags);
+}
+
+status_t JMediaCodec::configureForDisplayCapture(
+        const sp<AMessage> &format,
+        const sp<ICrypto> &crypto,
+        int flags) {
+    status_t err;
+    int32_t width, height;
+
+    err = mCodec->configure(format, NULL, crypto,
+            flags);
+    if (err != NO_ERROR) {
+        ALOGE("Unable to configure codec");
+        mCodec->flush();
+        return err;
+    }
+    sp<IGraphicBufferProducer> bufferProducer;
+    err = mCodec->createInputSurface(&bufferProducer);
+    if (err != NO_ERROR) {
+        ALOGE("Unable to create input surface");
+        mCodec->flush();
+        return err;
+    }
+
+    format->findInt32("width", &width);
+    format->findInt32("height", &height);
+    err = prepareVirtualDisplay(width, height, bufferProducer);
+    if (err != NO_ERROR) {
+        ALOGE("Unable to prepare virtual display");
+        mCodec->flush();
+        return err;
+    }
+    mCapturingDisplay = true;
+
+    return err;
 }
 
 status_t JMediaCodec::createInputSurface(
@@ -320,6 +361,87 @@ void JMediaCodec::setVideoScalingMode(int mode) {
     }
 }
 
+/*
+ * Configures the virtual display.  When this completes, virtual display
+ * frames will start being sent to the encoder's surface.
+ */
+status_t JMediaCodec::prepareVirtualDisplay(const int32_t width, const int32_t height,
+        const sp<IGraphicBufferProducer> &bufferProducer) {
+    status_t err;
+
+    // Get main display parameters.
+    sp<IBinder> mainDpy = SurfaceComposerClient::getBuiltInDisplay(
+            ISurfaceComposer::eDisplayIdMain);
+    DisplayInfo mainDpyInfo;
+    err = SurfaceComposerClient::getDisplayInfo(mainDpy, &mainDpyInfo);
+    if (err != NO_ERROR) {
+        ALOGE("ERROR: unable to get display characteristics");
+        return err;
+    }
+
+    // Set the region of the layer stack we're interested in, which in our
+    // case is "all of it".  If the app is rotated (so that the width of the
+    // app is based on the height of the display), reverse width/height.
+    bool deviceRotated = mainDpyInfo.orientation != DISPLAY_ORIENTATION_0 &&
+            mainDpyInfo.orientation != DISPLAY_ORIENTATION_180;
+
+    uint32_t sourceWidth, sourceHeight;
+    if (!deviceRotated) {
+        sourceWidth = mainDpyInfo.w;
+        sourceHeight = mainDpyInfo.h;
+    } else {
+        ALOGV("using rotated width/height");
+        sourceHeight = mainDpyInfo.w;
+        sourceWidth = mainDpyInfo.h;
+    }
+    Rect layerStackRect(sourceWidth, sourceHeight);
+
+    // We need to preserve the aspect ratio of the display.
+    float displayAspect = (float) sourceHeight / (float) sourceWidth;
+
+    // Set the way we map the output onto the display surface (which will
+    // be e.g. 1280x720 for a 720p video).  The rect is interpreted
+    // post-rotation, so if the display is rotated 90 degrees we need to
+    // "pre-rotate" it by flipping width/height, so that the orientation
+    // adjustment changes it back.
+    //
+    // We might want to encode a portrait display as landscape to use more
+    // of the screen real estate.  (If players respect a 90-degree rotation
+    // hint, we can essentially get a 720x1280 video instead of 1280x720.)
+    // In that case, we swap the configured video width/height and then
+    // supply a rotation value to the display projection.
+    uint32_t videoWidth, videoHeight;
+    uint32_t outWidth, outHeight;
+    videoWidth = (uint32_t) width;
+    videoHeight = (uint32_t) height;
+    if (videoHeight > (uint32_t)(videoWidth * displayAspect)) {
+        // limited by narrow width; reduce height
+        outWidth = videoWidth;
+        outHeight = (uint32_t)(videoWidth * displayAspect);
+    } else {
+        // limited by short height; restrict width
+        outHeight = videoHeight;
+        outWidth = (uint32_t)(videoHeight / displayAspect);
+    }
+    uint32_t offX, offY;
+    offX = (videoWidth - outWidth) / 2;
+    offY = (videoHeight - outHeight) / 2;
+    Rect displayRect(offX, offY, offX + outWidth, offY + outHeight);
+
+    mDpy = SurfaceComposerClient::createDisplay(
+            String8("MediaCodec"), false /* secure */);
+
+    SurfaceComposerClient::openGlobalTransaction();
+    SurfaceComposerClient::setDisplaySurface(mDpy, bufferProducer);
+    SurfaceComposerClient::setDisplayProjection(mDpy,
+            0,
+            layerStackRect, displayRect);
+    SurfaceComposerClient::setDisplayLayerStack(mDpy, 0);    // default stack
+    SurfaceComposerClient::closeGlobalTransaction();
+
+    return NO_ERROR;
+}
+
 }  // namespace android
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -459,6 +581,37 @@ static void android_media_MediaCodec_native_configure(
     }
 
     err = codec->configure(format, bufferProducer, crypto, flags);
+
+    throwExceptionAsNecessary(env, err);
+}
+
+static void android_media_MediaCodec_native_configureForDisplayCapture(
+        JNIEnv *env,
+        jobject thiz,
+        jobjectArray keys, jobjectArray values,
+        jobject jcrypto,
+        jint flags) {
+    sp<JMediaCodec> codec = getMediaCodec(env, thiz);
+
+    if (codec == NULL) {
+        jniThrowException(env, "java/lang/IllegalStateException", NULL);
+        return;
+    }
+
+    sp<AMessage> format;
+    status_t err = ConvertKeyValueArraysToMessage(env, keys, values, &format);
+
+    if (err != OK) {
+        jniThrowException(env, "java/lang/IllegalArgumentException", NULL);
+        return;
+    }
+
+    sp<ICrypto> crypto;
+    if (jcrypto != NULL) {
+        crypto = JCrypto::GetCrypto(env, jcrypto);
+    }
+
+    err = codec->configureForDisplayCapture(format, crypto, flags);
 
     throwExceptionAsNecessary(env, err);
 }
@@ -976,6 +1129,11 @@ static JNINativeMethod gMethods[] = {
       "([Ljava/lang/String;[Ljava/lang/Object;Landroid/view/Surface;"
       "Landroid/media/MediaCrypto;I)V",
       (void *)android_media_MediaCodec_native_configure },
+
+    { "native_configureForDisplayCapture",
+      "([Ljava/lang/String;[Ljava/lang/Object;"
+      "Landroid/media/MediaCrypto;I)V",
+      (void *)android_media_MediaCodec_native_configureForDisplayCapture },
 
     { "createInputSurface", "()Landroid/view/Surface;",
       (void *)android_media_MediaCodec_createInputSurface },
