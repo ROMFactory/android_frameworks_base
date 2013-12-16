@@ -143,11 +143,15 @@ class QuickSettings {
     private BatteryMeterView mBattery;
     private BatteryCircleMeterView mCircleBattery;
     private int mBatteryStyle;
+    public final ConnectivityManager cm;
 
     public QuickSettings(Context context, QuickSettingsContainerView container) {
         mDevicePolicyManager
             = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         mContext = context;
+        cm =
+            (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+ 
         mContainerView = container;
         mModel = new QuickSettingsModel(context);
         mBluetoothState = new QuickSettingsModel.BluetoothState();
@@ -526,9 +530,7 @@ class QuickSettings {
                         }
                     });
 
-                   final ConnectivityManager cm =
-                        (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-                   wifiTileBack.setOnClickListener(new View.OnClickListener() {
+                 wifiTileBack.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (cm.getTetherableWifiRegexs().length != 0) {
@@ -566,14 +568,25 @@ class QuickSettings {
                         rssiTile.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                // TODO: RSSI toggle
-                                Intent intent = new Intent();
-                                intent.setComponent(new ComponentName(
-                                        "com.android.settings",
-                                        "com.android.settings.Settings$DataUsageSummaryActivity"));
-                                startSettingsActivity(intent);
+                                boolean currentState = cm.getMobileDataEnabled();
+                                cm.setMobileDataEnabled(!currentState);
                             }
                         });
+
+                    if (LONG_PRESS_TOGGLES) {
+                        rssiTile.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                Intent intent = new Intent();
+                                intent.setComponent(new ComponentName(
+                                    "com.android.settings",
+                                    "com.android.settings.Settings$DataUsageSummaryActivity"));
+                                startSettingsActivity(intent);
+                                return true;
+                            }
+                        });
+                    }
+
                         mModel.addRSSITile(rssiTile, new NetworkActivityCallback() {
                             @Override
                             public void refreshView(QuickSettingsTileView view, State state) {
