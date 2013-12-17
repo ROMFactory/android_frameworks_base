@@ -906,6 +906,7 @@
         android:protectionLevel="normal"
         android:label="@string/permlab_wakeLock"
         android:description="@string/permdesc_wakeLock" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- Allows using the device's IR transmitter, if available -->
     <permission android:name="android.permission.TRANSMIT_IR"

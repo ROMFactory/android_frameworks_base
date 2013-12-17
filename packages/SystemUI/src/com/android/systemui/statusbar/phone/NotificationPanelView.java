@@ -61,6 +61,7 @@ public class NotificationPanelView extends PanelView {
     private int mFingers;
     private PhoneStatusBar mStatusBar;
     private boolean mOkToFlip;
+    private static final float mQuickPullDownPercentage = 0.8f;
 
     private float mGestureStartX;
     private float mGestureStartY;
@@ -151,7 +152,7 @@ public class NotificationPanelView extends PanelView {
                     mGestureStartY = event.getY(0);
                     mTrackingSwipe = isFullyExpanded();
                     mOkToFlip = getExpandedHeight() == 0;
-                    if (event.getX(0) > getWidth() * 0.7f) {
+                    if (event.getX(0) > getWidth() * mQuickPullDownPercentage) {
                         flip = true;
                     }
                     break;
@@ -191,7 +192,16 @@ public class NotificationPanelView extends PanelView {
                     }
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
-                    if (mOkToFlip) {
+                    flip = true;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    swipeFlipJustFinished = mSwipeTriggered;
+                    mSwipeTriggered = false;
+                    mTrackingSwipe = false;
+                    break;
+            }
+
+                    if (mOkToFlip && flip) {
                         float miny = event.getY(0);
                         float maxy = miny;
                         for (int i=1; i<event.getPointerCount(); i++) {
@@ -208,13 +218,7 @@ public class NotificationPanelView extends PanelView {
                             mOkToFlip = false;
                         }
                     }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    swipeFlipJustFinished = mSwipeTriggered;
-                    mSwipeTriggered = false;
-                    mTrackingSwipe = false;
-                    break;
-            }
+
 
             if (mSwipeTriggered) {
                 final float deltaX = (event.getX(0) - mGestureStartX) * mSwipeDirection;
