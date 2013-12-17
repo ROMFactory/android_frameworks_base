@@ -246,14 +246,14 @@ public class WindowAnimator {
                         mService.mFocusMayChange = true;
                     }
                     if (win.isReadyForDisplay()) {
-                        if (Settings.System.getInt(mContext.getContentResolver(),
+                        if(Settings.System.getInt(mContext.getContentResolver(),
                                 Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 0) {
                             if (nowAnimating) {
                                 if (winAnimator.mAnimationIsEntrance) {
                                     mForceHiding = KEYGUARD_ANIMATING_IN;
                                 } else {
                                     mForceHiding = KEYGUARD_ANIMATING_OUT;
-                                }
+                                }                       
                             } else {
                                 mForceHiding = KEYGUARD_SHOWN;
                             }

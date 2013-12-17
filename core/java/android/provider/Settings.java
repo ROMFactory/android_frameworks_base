@@ -2162,6 +2162,8 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_ROTATION = "lockscreen_rotation";
 
+        
+
         /**
          * Control the type of rotation which can be performed using the accelerometer
          * if ACCELEROMETER_ROTATION is enabled.
@@ -2443,6 +2445,12 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_SOUNDS_ENABLED = "lockscreen_sounds_enabled";
+
+        /**  
+         * Allows to show the background activity back the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
 
         /**
          * Whether the lockscreen should be completely disabled.
@@ -2765,12 +2773,6 @@ public final class Settings {
         public static final String HEADSET_CONNECT_PLAYER = "headset_connect_player";
 
         /**
-         * Allows to show the background activity back the lockscreen
-         * @hide
-         */
-        public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
-
-        /**
          * Whether to wake the screen with the volume keys, the value is boolean.
          * @hide
          */
@@ -2857,7 +2859,15 @@ public final class Settings {
         public static final String CALL_END_SOUND = "call_end_sound";
 
         /**
+         * Allows blurring the lockscreen background
+         * @hide
+         */
+        public static final String LOCKSCREEN_BLUR_BEHIND = "lockscreen_blur_behind";
+        public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
+
+        /**
          * Width and height of output video expressed in WxH
+         *
          * @hide
          */
         public static final String SCREEN_RECORDER_OUTPUT_DIMENSIONS = "screen_recorder_output_dimensions";
