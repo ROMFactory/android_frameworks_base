@@ -4561,4 +4561,13 @@
     <!-- Long-press back kill application -->
     <string name="app_killed_message">App killed</string>
 
+   <!-- label for item that toggle mobile data -->
+    <string name="global_actions_toggle_mobile_data">Mobile data</string>
+
+    <!-- status message in phone options dialog for when mobile data is on -->
+    <string name="global_actions_mobile_data_on_status">Mobile data is ON</string>
+
+    <!-- status message in phone options dialog for when mobile data is off -->	
+    <string name="global_actions_mobile_data_off_status">Mobile data is OFF</string>
+
 </resources>

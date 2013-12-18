@@ -1341,6 +1341,8 @@
   <java-symbol type="drawable" name="ic_jog_dial_vibrate_on" />
   <java-symbol type="drawable" name="ic_lock_airplane_mode" />
   <java-symbol type="drawable" name="ic_lock_airplane_mode_off" />
+  <java-symbol type="drawable" name="ic_lock_mobile_data" />
+  <java-symbol type="drawable" name="ic_lock_mobile_data_off" />
   <java-symbol type="drawable" name="ic_lock_reboot" />
   <java-symbol type="drawable" name="ic_lock_reboot_recovery" />
   <java-symbol type="drawable" name="ic_lock_reboot_bootloader" />
@@ -1413,6 +1415,9 @@
   <java-symbol type="string" name="global_actions_airplane_mode_off_status" />
   <java-symbol type="string" name="global_actions_airplane_mode_on_status" />
   <java-symbol type="string" name="global_actions_toggle_airplane_mode" />
+  <java-symbol type="string" name="global_actions_mobile_data_off_status" />
+  <java-symbol type="string" name="global_actions_mobile_data_on_status" />
+  <java-symbol type="string" name="global_actions_toggle_mobile_data" />
   <java-symbol type="string" name="global_action_bug_report" />
   <java-symbol type="string" name="global_action_silent_mode_off_status" />
   <java-symbol type="string" name="global_action_silent_mode_on_status" />
