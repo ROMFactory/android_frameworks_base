@@ -1809,6 +1809,12 @@ public final class Settings {
         public static final String SCREEN_OFF_TIMEOUT = "screen_off_timeout";
 
         /**
+         * Whether to enable the electron beam animation when turning screen off
+         *
+         * @hide */
+        public static final String SCREEN_OFF_ANIMATION = "screen_off_animation";
+
+        /**
          * The screen backlight brightness between 0 and 255.
          */
         public static final String SCREEN_BRIGHTNESS = "screen_brightness";
@@ -2913,6 +2919,16 @@ public final class Settings {
          * @hide
          */
         public static final String SCREEN_RECORDER_RECORD_AUDIO = "screen_recorder_record_audio";
+
+        /**
+         * Electronic beam animation mode
+         * 0 = off,
+         * 1 = always horizontal,
+         * 2 = always vertical,
+         * 3 = dependent on orientation
+         * @hide
+         */
+        public static final String SYSTEM_POWER_CRT_MODE = "system_power_crt_mode";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
