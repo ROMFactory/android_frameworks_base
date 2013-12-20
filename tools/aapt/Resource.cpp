@@ -2028,9 +2028,9 @@ static status_t writeSymbolClass(
                 deprecated = true;
             }
         } else if (sym.isPublic && !includePrivate) {
-            sym.sourcePos.warning("No comment for public symbol %s:%s/%s",
-                assets->getPackage().string(), className.string(),
-                String8(sym.name).string());
+//            sym.sourcePos.warning("No comment for public symbol %s:%s/%s",
+//                assets->getPackage().string(), className.string(),
+//                String8(sym.name).string());
         }
         String16 typeComment(sym.typeComment);
         if (typeComment.size() > 0) {
@@ -2080,9 +2080,9 @@ static status_t writeSymbolClass(
                 deprecated = true;
             }
         } else if (sym.isPublic && !includePrivate) {
-            sym.sourcePos.warning("No comment for public symbol %s:%s/%s",
-                assets->getPackage().string(), className.string(),
-                String8(sym.name).string());
+//            sym.sourcePos.warning("No comment for public symbol %s:%s/%s",
+//                assets->getPackage().string(), className.string(),
+//                String8(sym.name).string());
         }
         if (deprecated) {
             fprintf(fp, "%s@Deprecated\n", getIndentSpace(indent));
