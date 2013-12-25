@@ -2439,9 +2439,13 @@ public final class Settings {
          */
         public static final String BATTERY_LIGHT_FULL_COLOR = "battery_light_full_color";
 
+        /**
+         * @hide
+         */
+        public static final String DISABLE_CAMERA_WIDGET = "disable_camera_widget";
 
-        /** 
-         * Setting to enable volume options 
+        /**
+         * Setting to enable volume options
          * @hide
          */
         public static final String ENABLE_VOLUME_OPTIONS = "enable_volume_options";
