@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
- * This code has been modified. Portions copyright (C) 2013, 2014, OmniRom Project.
+ * This code has been modified. Portions copyright (C) 2013, OmniRom Project.
  * This code has been modified. Portions copyright (C) 2013, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewParent;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -46,9 +48,10 @@ class QuickSettingsTileView extends FrameLayout {
 
     private static final float NON_EDITABLE = 1f;
     private static final float ENABLED = 0.95f;
-    private static final float DISABLED = 0.8f;
+    private static final float DISABLED = 0.65f;
 
     private Tile mTileId;
+    private int mTileTextSize;
 
     private OnClickListener mOnClickListener;
     private OnLongClickListener mOnLongClickListener;
@@ -56,9 +59,11 @@ class QuickSettingsTileView extends FrameLayout {
     private int mContentLayoutId;
     private int mColSpan;
     private int mRowSpan;
+
     private boolean mPrepared;
     private OnPrepareListener mOnPrepareListener;
-
+    private QuickSettingsTouchListener mTouchListener;
+    private QuickSettingsDragListener mDragListener;
     private boolean mTemporary;
     private boolean mEditMode;
     private boolean mVisible;
@@ -70,15 +75,22 @@ class QuickSettingsTileView extends FrameLayout {
         mColSpan = 1;
         mRowSpan = 1;
 
-        QuickSettingsTouchListener touchListener
-                = new QuickSettingsTouchListener(context, this);
-        QuickSettingsDragListener dragListener = new QuickSettingsDragListener();
-        setOnTouchListener(touchListener);
-        setOnDragListener(dragListener);
+        mTouchListener = new QuickSettingsTouchListener();
+        mDragListener = new QuickSettingsDragListener();
+        setOnTouchListener(mTouchListener);
+        setOnDragListener(mDragListener);
     }
 
     void setTileId(Tile id) {
         mTileId = id;
+    }
+
+    QuickSettingsTouchListener getTouchListener() {
+        return mTouchListener;
+    }
+
+    QuickSettingsDragListener getDragListener() {
+        return mDragListener;
     }
 
     Tile getTileId() {
@@ -87,7 +99,7 @@ class QuickSettingsTileView extends FrameLayout {
 
     void setTemporary(boolean temporary) {
         mTemporary = temporary;
-        if(temporary) { // No listeners needed
+        if (temporary) { // No listeners needed
             setOnTouchListener(null);
             setOnDragListener(null);
         }
@@ -103,6 +115,14 @@ class QuickSettingsTileView extends FrameLayout {
 
     int getColumnSpan() {
         return mColSpan;
+    }
+
+    void setTextSizes(int size) {
+        mTileTextSize = size;
+    }
+
+    int getTextSizes() {
+        return mTileTextSize;
     }
 
     void setContent(int layoutId, LayoutInflater inflater) {
@@ -197,7 +217,9 @@ class QuickSettingsTileView extends FrameLayout {
 
     @Override
     public void setOnClickListener(OnClickListener listener) {
-        mOnClickListener = listener;
+        if (!mEditMode) {
+            mOnClickListener = listener;
+        }
         super.setOnClickListener(listener);
     }
 
@@ -207,7 +229,9 @@ class QuickSettingsTileView extends FrameLayout {
 
     @Override
     public void setOnLongClickListener(OnLongClickListener listener) {
-        mOnLongClickListener = listener;
+        if (!mEditMode) {
+            mOnLongClickListener = listener;
+        }
         super.setOnLongClickListener(listener);
     }
 

@@ -3231,6 +3231,7 @@ public final class Settings {
 
         /**
          * Whether to remove the sound from outgoing notifications during quiet hours.
+         *
          * @hide
          */
         public static final String QUIET_HOURS_MUTE = "quiet_hours_mute";

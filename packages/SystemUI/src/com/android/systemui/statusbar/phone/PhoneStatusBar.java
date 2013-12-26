@@ -72,6 +72,7 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -358,6 +359,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_ALPHA),
                     false, this, UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QUICK_SETTINGS_TILES), false, this);
             update();
         }
 
@@ -394,7 +397,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
                     resolver, Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL, 0) == 1;
 
             updateCustomHeaderStatus();
-
+            if (mQS != null) mQS.updateResources();
         }
     }
 
@@ -848,9 +851,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
                 mQS.setBar(mStatusBarView);
                 mQS.setup(mNetworkController, mBluetoothController, mBatteryController,
                         mLocationController, mRotationLockController);
-
                 if (mEditModeButton != null) {
                     mEditModeButton.setOnClickListener(mEditModeButtonListener);
+                    mEditModeButton.setOnLongClickListener(mEditModeLongButtonListener);
                     mEditModeButton.setEnabled(true);
                 }
 
@@ -2955,6 +2958,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
                             mAnimatingEditModeButton = false;
                         }
                 });
+        }
+    };
+
+    private View.OnLongClickListener mEditModeLongButtonListener = new View.OnLongClickListener() {
+        public boolean onLongClick(View v) {
+            animateCollapsePanels();
+            Settings.System.putString(mContext.getContentResolver(),
+                        Settings.System.QUICK_SETTINGS_TILES, QuickSettings.DEFAULT_TILES);
+            // Update the QuickSettings container
+            if (mQS != null) mQS.updateTiles();
+            return true;
         }
     };
 
