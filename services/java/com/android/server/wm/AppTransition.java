@@ -61,7 +61,7 @@ import static com.android.internal.R.styleable.WindowAnimation_wallpaperIntraOpe
 import static com.android.internal.R.styleable.WindowAnimation_wallpaperIntraCloseEnterAnimation;
 import static com.android.internal.R.styleable.WindowAnimation_wallpaperIntraCloseExitAnimation;
 
-import com.android.internal.util.AwesomeAnimationHelper;
+import com.android.internal.util.aokp.AwesomeAnimationHelper;
 import android.widget.Toast;
 
 // State management of app transitions.  When we are preparing for a
@@ -878,6 +878,7 @@ public class AppTransition implements Dump {
         SettingsObserver(Handler handler) {
             super(handler);
         }
+
         void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(
@@ -885,11 +886,13 @@ public class AppTransition implements Dump {
             resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.ANIMATION_CONTROLS_NO_OVERRIDE), false, this);
             for (int i = 0; i < 10; i++) {
-	            resolver.registerContentObserver(
+              resolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.ACTIVITY_ANIMATION_CONTROLS[i]), false, this);
             }
+
         }
-         @Override
+
+        @Override
         public void onChange(boolean selfChange) {
             updateSettings();
         }
@@ -897,11 +900,11 @@ public class AppTransition implements Dump {
 
     private void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
-        for (int i = 0; i < 10; i++) {  
+        for (int i = 0; i < 10; i++) {
             mActivityAnimations[i] = Settings.System.getInt(resolver, Settings.System.ACTIVITY_ANIMATION_CONTROLS[i], 0);
         }
 
-        mNoOverrides = Settings.System.getBoolean(resolver, Settings.System.ANIMATION_CONTROLS_NO_OVERRIDE, false);
+        mNoOverrides = Settings.System.getInt(resolver, Settings.System.ANIMATION_CONTROLS_NO_OVERRIDE, 0) == 1;
 
         int temp = Settings.System.getInt(resolver, Settings.System.ANIMATION_CONTROLS_DURATION, 0);
         mAnimationDuration = temp * 15;

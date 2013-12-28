@@ -82,7 +82,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RemoteViews.OnClickHandler;
 
 import com.android.internal.R;
-
+import com.android.internal.util.aokp.AwesomeAnimationHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -2347,6 +2347,11 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 Settings.System.LISTVIEW_INTERPOLATOR,
                 0, UserHandle.USER_CURRENT_OR_SELF);
 
+        int listAnimationDuration = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.LISTVIEW_DURATION,
+                500, UserHandle.USER_CURRENT_OR_SELF);
+
         try {
             scrollY = getChildAt(0).getTop();
         } catch (NullPointerException e) {
@@ -2406,39 +2411,12 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 return view;
         }
 
-        switch (listAnimationInterpolatorMode) {
-            case 1:
-                anim.setInterpolator(AnimationUtils.loadInterpolator(
-                    mContext, android.R.anim.accelerate_interpolator));
-                break;
-            case 2:
-                anim.setInterpolator(AnimationUtils.loadInterpolator(
-                    mContext, android.R.anim.decelerate_interpolator));
-                break;
-            case 3:
-                anim.setInterpolator(AnimationUtils.loadInterpolator(
-                    mContext, android.R.anim.accelerate_decelerate_interpolator));
-                break;
-            case 4:
-                anim.setInterpolator(AnimationUtils.loadInterpolator(
-                    mContext, android.R.anim.anticipate_interpolator));
-                break;
-            case 5:
-                anim.setInterpolator(AnimationUtils.loadInterpolator(
-                    mContext, android.R.anim.overshoot_interpolator));
-                break;
-            case 6:
-                anim.setInterpolator(AnimationUtils.loadInterpolator(
-                    mContext, android.R.anim.anticipate_overshoot_interpolator));
-                break;
-            case 7:
-                anim.setInterpolator(AnimationUtils.loadInterpolator(
-                    mContext, android.R.anim.bounce_interpolator));
-                break;
-            default:
-                break;
+        anim.setInterpolator(AwesomeAnimationHelper.getInterpolator(mContext, listAnimationInterpolatorMode));
+        if (listAnimationDuration > 0) {
+            anim.setDuration(listAnimationDuration);
+        } else {
+            anim.setDuration(500);
         }
-        anim.setDuration(500);
         view.startAnimation(anim);
         return view;
     }
