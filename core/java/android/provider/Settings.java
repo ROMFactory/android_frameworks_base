@@ -2592,78 +2592,12 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_TARGETS = "lockscreen_targets";
 
-        /**
-         * Whether to display notifications on screen when screen is off
-         * @hide
-         */
-        public static final String ENABLE_ACTIVE_DISPLAY = "enable_active_display";
-
-        /**
-         * Whether to display notification messages around ring
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_TEXT = "active_display_text";
-
-        /**
-         * Time to redisplay notifications on screen from when screen turns off, 0 = never redisplay
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_REDISPLAY = "active_display_redisplay";
-
-        /**
-         * Brightness of the display when displaying the active display view
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_BRIGHTNESS = "active_display_brightness";
-
-        /**
-         * Display active display view when device comes out of the user's pocket, etc...
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_POCKET_MODE = "active_display_pocket_mode";
-
-        /**
-         * Whether to include ongoing/non-clearable notifications
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_ALL_NOTIFICATIONS = "active_display_all_notifications";
-
-        /**
-         * Whether to hide low priority notifications like those from google now
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_HIDE_LOW_PRIORITY_NOTIFICATIONS =
-                "active_display_hide_low_priority_notifications";
 
         /**
          * Whether double-tap and hold on the lock glowpad starts the torch
          * @hide
          */
         public static final String LOCKSCREEN_GLOWPAD_TORCH = "lockscreen_glowpad_torch";
-
-        /**
-         * Whether to display AM/PM after time in 12h format
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_SHOW_AMPM = "active_display_show_ampm";
-
-        /**
-         * Whether to display the date above the time
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_SHOW_DATE = "active_display_show_date";
-
-        /**
-         * Whether to invert the colors when in bright light
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_SUNLIGHT_MODE = "active_display_sunlight_mode";
-
-        /**
-         * Whether to turn off the device when gets pocketed again and was waked up by active display
-         * @hide
-         */
-        public static final String ACTIVE_DISPLAY_TURNOFF_MODE = "active_display_turnoff_mode";
 
         /**
          * Whether to show the battery bar
