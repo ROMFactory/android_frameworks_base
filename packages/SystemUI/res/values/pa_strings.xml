@@ -32,4 +32,15 @@
     <string name="navbar_menu_conditional_button">Menu (AutoHide) button</string>
     <string name="navbar_menu_always_button">Menu (AlwaysShow) button</string>
     <string name="navbar_menu_big_button">Menu button</string>
+
+    <!-- QuickSettings: LTE On [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_lte">LTE</string>
+    <!-- QuickSettings: LTE Off [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_lte_off">LTE Off</string>
+    <!-- QuickSettings: Mobile Network (2G/3G) [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_network_type">Network</string>
+    <string name="quick_settings_network_unknown">Unknown</string>
+    <!-- QuickSettings: Lightbulb tile [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_lightbulb_label">Lightbulb</string>
+    <string name="quick_settings_lightbulb_off_label">Lightbulb off</string>
 </resources>
