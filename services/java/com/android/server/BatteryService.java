@@ -141,6 +141,7 @@ public final class BatteryService extends Binder {
     private int mBatteryFullARGB;
     private int mBatteryReallyFullARGB;
     private boolean mMultiColorLed;
+    private SettingsObserver mObserver;
 
     private boolean mSentLowBatteryBroadcast = false;
 
@@ -187,8 +188,10 @@ public final class BatteryService extends Binder {
         } catch (RemoteException e) {
             // Should never happen.
         }
-        SettingsObserver observer = new SettingsObserver(new Handler());
-        observer.observe();
+
+        mObserver = new SettingsObserver(new Handler());
+        mObserver.observe();
+
     }
 
     void systemReady() {
