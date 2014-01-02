@@ -152,6 +152,7 @@ public final class BatteryService extends Binder {
     private int mQuietHoursStart = 0;
     private int mQuietHoursEnd = 0;
     private boolean mQuietHoursDim = true;
+    private boolean mQuietHoursBattery = true;
 
     public BatteryService(Context context, LightsService lights) {
         mContext = context;
@@ -745,9 +746,10 @@ public final class BatteryService extends Binder {
             if (!mLightEnabled) {
                 // No lights if explicitly disabled
                 mBatteryLight.turnOff();
-            } else if (inQuietHours() && mQuietHoursDim) {
+          } else if (inQuietHours() && (mQuietHoursDim || mQuietHoursBattery)) {
                 if (mLedPulseEnabled && level < mLowBatteryWarningLevel &&
-                        status != BatteryManager.BATTERY_STATUS_CHARGING) {
+                        status != BatteryManager.BATTERY_STATUS_CHARGING &&
+                        !mQuietHoursBattery) {
                     // The battery is low, the device is not charging and the low battery pulse
                     // is enabled - ignore Quiet Hours
                     mBatteryLight.setFlashing(mBatteryLowARGB, LightsService.LIGHT_FLASH_TIMED,
@@ -837,6 +839,9 @@ public final class BatteryService extends Binder {
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.QUIET_HOURS_DIM), false, this,
                     UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QUIET_HOURS_BATTERY), false, this,
+                    UserHandle.USER_ALL);
 
             update();
         }
@@ -883,6 +888,9 @@ public final class BatteryService extends Binder {
             mQuietHoursDim = Settings.System.getIntForUser(resolver,
                     Settings.System.QUIET_HOURS_DIM, 0,
                     UserHandle.USER_CURRENT_OR_SELF) != 0;
+            mQuietHoursBattery = Settings.System.getIntForUser(resolver,
+                    Settings.System.QUIET_HOURS_BATTERY, 0,
+                    UserHandle.USER_CURRENT_OR_SELF) !=0;
 
             updateLedPulse();
         }
