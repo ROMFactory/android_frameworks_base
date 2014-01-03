@@ -7362,11 +7362,11 @@ public final class ActivityManagerService extends ActivityManagerNative
             Slog.v(TAG_MU, "generateApplicationProvidersLocked, app.info.uid = " + app.uid);
         int userId = app.userId;
         if (providers != null) {
-            int N = providers.size();
-            app.pubProviders.ensureCapacity(N + app.pubProviders.size());
-            for (int i=0; i<N; i++) {
-                ProviderInfo cpi =
-                    (ProviderInfo)providers.get(i);
+            app.pubProviders.ensureCapacity(providers.size() + app.pubProviders.size());
+            Iterator<ProviderInfo> iter_provider = providers.iterator();
+
+            while(iter_provider.hasNext()) {
+                ProviderInfo cpi = (ProviderInfo) iter_provider.next();
                 boolean singleton = isSingleton(cpi.processName, cpi.applicationInfo,
                         cpi.name, cpi.flags);
                 if (singleton && UserHandle.getUserId(app.uid) != 0) {
@@ -7374,29 +7374,26 @@ public final class ActivityManagerService extends ActivityManagerNative
                     // default user is asking to initialize a process it runs
                     // in...  well, no, it doesn't actually run in this process,
                     // it runs in the process of the default user.  Get rid of it.
-                    providers.remove(i);
-                    N--;
-                    i--;
-                    continue;
+                    iter_provider.remove();
+                } else {
+                    ComponentName comp = new ComponentName(cpi.packageName, cpi.name);
+                    ContentProviderRecord cpr = mProviderMap.getProviderByClass(comp, userId);
+                    if (cpr == null) {
+                        cpr = new ContentProviderRecord(this, cpi, app.info, comp, singleton);
+                        mProviderMap.putProviderByClass(comp, cpr);
+                    }
+                    if (DEBUG_MU)
+                        Slog.v(TAG_MU, "generateApplicationProvidersLocked, cpi.uid = " + cpr.uid);
+                    app.pubProviders.put(cpi.name, cpr);
+                    if (!cpi.multiprocess || !"android".equals(cpi.packageName)) {
+                        // Don't add this if it is a platform component that is marked
+                        // to run in multiple processes, because this is actually
+                        // part of the framework so doesn't make sense to track as a
+                        // separate apk in the process.
+                       app.addPackage(cpi.applicationInfo.packageName, mProcessStats);
+                    }
+                    ensurePackageDexOpt(cpi.applicationInfo.packageName);
                 }
-
-                ComponentName comp = new ComponentName(cpi.packageName, cpi.name);
-                ContentProviderRecord cpr = mProviderMap.getProviderByClass(comp, userId);
-                if (cpr == null) {
-                    cpr = new ContentProviderRecord(this, cpi, app.info, comp, singleton);
-                    mProviderMap.putProviderByClass(comp, cpr);
-                }
-                if (DEBUG_MU)
-                    Slog.v(TAG_MU, "generateApplicationProvidersLocked, cpi.uid = " + cpr.uid);
-                app.pubProviders.put(cpi.name, cpr);
-                if (!cpi.multiprocess || !"android".equals(cpi.packageName)) {
-                    // Don't add this if it is a platform component that is marked
-                    // to run in multiple processes, because this is actually
-                    // part of the framework so doesn't make sense to track as a
-                    // separate apk in the process.
-                    app.addPackage(cpi.applicationInfo.packageName, mProcessStats);
-                }
-                ensurePackageDexOpt(cpi.applicationInfo.packageName);
             }
         }
         return providers;
