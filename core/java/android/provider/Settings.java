@@ -2832,6 +2832,15 @@ public final class Settings {
         public static final String POINTER_SPEED = "pointer_speed";
 
         /**
+         * @hide
+         * Show Wifi network name in notification drawer
+         * 0 - don't show
+         * 1 - show
+         */
+        public static final String NOTIFICATION_SHOW_WIFI_SSID = "notification_show_wifi_ssid";
+
+
+        /**
          * HALO, should default to 0 (no, do not show)
          * @hide
          */
