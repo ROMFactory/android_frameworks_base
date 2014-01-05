@@ -70,6 +70,8 @@ public class NotificationPanelView extends PanelView {
     private boolean mTrackingSwipe;
     private boolean mSwipeTriggered;
 
+    private Display mDisplay;
+
     public NotificationPanelView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -261,9 +263,11 @@ public class NotificationPanelView extends PanelView {
             return;
         }
         boolean isLandscape = false;
-        Display display = ((WindowManager) getContext()
-                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        int orientation = display.getRotation();
+        if (mDisplay == null) {
+            mDisplay = ((WindowManager) getContext()
+                    .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        }
+        int orientation = mDisplay.getRotation();
         switch(orientation) {
             case Surface.ROTATION_90:
             case Surface.ROTATION_270:
@@ -318,9 +322,16 @@ public class NotificationPanelView extends PanelView {
         } else {
             File f = new File(Uri.parse(notifiBack).getPath());
             if (f !=  null) {
-                Bitmap backgroundBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
-                mBackgroundDrawable =
-                    new BitmapDrawable(getContext().getResources(), backgroundBitmap);
+                Bitmap backgroundBitmap = null;
+                try {
+                    backgroundBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+                    mBackgroundDrawable =
+                            new BitmapDrawable(getContext().getResources(), backgroundBitmap);
+                } finally {
+                    if (backgroundBitmap != null) {
+                        backgroundBitmap.recycle();
+                    }
+                }
             }
         }
         if (mBackgroundDrawable != null) {
@@ -337,9 +348,16 @@ public class NotificationPanelView extends PanelView {
         if (notifiBack != null) {
             File f = new File(Uri.parse(notifiBack).getPath());
             if (f !=  null) {
-                Bitmap backgroundBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
-                mBackgroundDrawableLandscape =
-                    new BitmapDrawable(getContext().getResources(), backgroundBitmap);
+                Bitmap backgroundBitmap = null;
+                try {
+                    backgroundBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+                    mBackgroundDrawableLandscape =
+                           new BitmapDrawable(getContext().getResources(), backgroundBitmap);
+                } finally {
+                    if (backgroundBitmap != null) {
+                        backgroundBitmap.recycle();
+                    }
+                }
             }
         }
         if (mBackgroundDrawableLandscape != null) {
