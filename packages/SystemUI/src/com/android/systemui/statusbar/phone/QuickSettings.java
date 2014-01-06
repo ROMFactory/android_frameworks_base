@@ -760,7 +760,7 @@ class QuickSettings {
                     mobileNetworkTile.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            toggleMobileNetworkState();
+                            mModel.toggleMobileNetworkState();
                         }
                     });
 
@@ -778,8 +778,8 @@ class QuickSettings {
                     mModel.addMobileNetworkTile(mobileNetworkTile, new QuickSettingsModel.RefreshCallback() {
                         @Override
                         public void refreshView(QuickSettingsTileView unused, State mobileNetworkState) {
-                            mobileNetworkTile.setText(mobileNetworkState.iconId);
-                            mobileNetworkTile.setImageResource(mobileNetworkState.label);
+                            mobileNetworkTile.setText(mobileNetworkState.label);
+                            mobileNetworkTile.setImageResource(mobileNetworkState.iconId);
                         }
                     });
                     
@@ -1035,20 +1035,20 @@ class QuickSettings {
                   }
                } else if (Tile.LOCATION.toString().equals(tile.toString())) { // Location
                  // Location
-                 final QuickSettingsBasicTile locationTile
-                       = new QuickSettingsBasicTile(mContext);
+                 final QuickSettingsFlipTile locationTile
+                       = new QuickSettingsFlipTile(mContext);
                  locationTile.setTileId(Tile.LOCATION);
-                 locationTile.setImageResource(R.drawable.ic_qs_location_on);
-                 locationTile.setTextResource(R.string.quick_settings_location_label);
-                 locationTile.setOnLongClickListener(new View.OnLongClickListener() {
+                 locationTile.setFrontImageResource(R.drawable.ic_qs_location_on);
+                 locationTile.setFrontText(mContext.getString(R.string.quick_settings_location_label));
+                 locationTile.setBackLabel(mContext.getString(R.string.quick_settings_volume_status));
+                 locationTile.setFrontOnLongClickListener(new View.OnLongClickListener() {
                        @Override
                        public boolean onLongClick(View v) {
                            startSettingsActivity(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                            return true;
                        }
-                 });
-
-                  locationTile.setOnClickListener(new View.OnClickListener() {
+                  });
+                  locationTile.setFrontOnClickListener(new View.OnClickListener() {
                        @Override
                        public void onClick(View v) {
                            boolean newLocationEnabledState = !mLocationController.isLocationEnabled();
@@ -1059,19 +1059,46 @@ class QuickSettings {
                                Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
                                mContext.sendBroadcast(closeDialog);
                            }
-                  }
-            } );
-                  mModel.addLocationTile(locationTile, new QuickSettingsModel.RefreshCallback() {
+                  }} );
+                  mModel.addLocationTile(locationTile.getFront(), new QuickSettingsModel.RefreshCallback() {
                       @Override
                       public void refreshView(QuickSettingsTileView unused, State state) {
-                          locationTile.setImageResource(state.iconId);
+                          locationTile.setFrontImageResource(state.iconId);
                           String locationState = mContext.getString(
                               (state.enabled) ? R.string.accessibility_desc_on
                                     : R.string.accessibility_desc_off);
                           locationTile.setContentDescription(mContext.getString(
                               R.string.accessibility_quick_settings_location,
                               locationState));
-                          locationTile.setText(state.label);
+                          locationTile.setFrontText(state.label);
+                      }
+                  });
+                  locationTile.setBackOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
+                           int newLocationMode = mLocationController.locationMode();
+                           if (mLocationController.isLocationEnabled()) {
+                               if (mLocationController.setBackLocationEnabled(newLocationMode)) {
+                                   if (mLocationController.isLocationAllowPanelCollapse()) {
+                                       Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+                                       mContext.sendBroadcast(closeDialog);
+                                   }
+                               }
+                           }
+                  }} );
+                  locationTile.setBackOnLongClickListener(new View.OnLongClickListener() {
+                       @Override
+                       public boolean onLongClick(View v) {
+                           startSettingsActivity(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                           return true;
+                       }
+                  });
+                  mModel.addBackLocationTile(locationTile.getBack(), mLocationController,
+                                    new QuickSettingsModel.RefreshCallback() {
+                      @Override
+                      public void refreshView(QuickSettingsTileView unused, State state) {
+                          locationTile.setBackImageResource(state.iconId);
+                          locationTile.setBackFunction(state.label);
                       }
                   });
                   parent.addView(locationTile);
@@ -1163,26 +1190,6 @@ class QuickSettings {
             parent.addView(imeTile);
         }
 
-        // Bug reports
-        final QuickSettingsBasicTile bugreportTile
-                = new QuickSettingsBasicTile(mContext);
-        bugreportTile.setTemporary(true);
-        bugreportTile.setImageResource(com.android.internal.R.drawable.stat_sys_adb);
-        bugreportTile.setTextResource(com.android.internal.R.string.bugreport_title);
-        bugreportTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                collapsePanels();
-                showBugreportDialog();
-            }
-        });
-        mModel.addBugreportTile(bugreportTile, new QuickSettingsModel.RefreshCallback() {
-            @Override
-            public void refreshView(QuickSettingsTileView view, State state) {
-                view.setVisibility(state.enabled ? View.VISIBLE : View.GONE);
-            }
-        });
-        parent.addView(bugreportTile);
         /*
         QuickSettingsTileView mediaTile = (QuickSettingsTileView)
                 inflater.inflate(R.layout.quick_settings_tile, parent, false);
