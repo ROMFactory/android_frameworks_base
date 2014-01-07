@@ -33,7 +33,6 @@ import android.os.CancellationSignal;
 import android.os.DeadObjectException;
 import android.os.IBinder;
 import android.os.ICancellationSignal;
-import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.os.ServiceManager;

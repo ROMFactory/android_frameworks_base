@@ -15,9 +15,6 @@
 
 package android.os;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * {@hide}
  */

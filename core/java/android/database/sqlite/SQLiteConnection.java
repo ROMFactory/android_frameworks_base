@@ -24,7 +24,6 @@ import android.database.CursorWindow;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDebug.DbStats;
 import android.os.CancellationSignal;
-import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.util.LruCache;

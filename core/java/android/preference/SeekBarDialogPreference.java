@@ -18,7 +18,6 @@ package android.preference;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;

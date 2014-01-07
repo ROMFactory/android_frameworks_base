@@ -16,7 +16,6 @@
 
 package android.os;
 
-import android.content.Context;
 import android.os.storage.IMountService;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;

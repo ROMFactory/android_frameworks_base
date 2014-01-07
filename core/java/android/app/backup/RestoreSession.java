@@ -16,10 +16,6 @@
 
 package android.app.backup;
 
-import android.app.backup.RestoreObserver;
-import android.app.backup.RestoreSet;
-import android.app.backup.IRestoreObserver;
-import android.app.backup.IRestoreSession;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;

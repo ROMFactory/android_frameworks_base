@@ -28,15 +28,12 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.BatteryManager;
 import android.os.Handler;
-import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -44,8 +41,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.android.internal.R;
-
-import com.android.systemui.BatteryMeterView;
 
 /***
  * Note about CircleBattery Implementation:

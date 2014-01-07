@@ -16,8 +16,6 @@
 
 package android.os;
 
-import android.content.Context;
-
 /**
  * Class that operates the vibrator on the device.
  * <p>

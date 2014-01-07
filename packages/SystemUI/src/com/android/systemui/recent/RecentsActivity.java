@@ -25,7 +25,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.view.MotionEvent;
@@ -36,7 +35,6 @@ import com.android.systemui.R;
 import com.android.systemui.statusbar.StatusBarPanel;
 import com.android.systemui.statusbar.phone.NavigationBarView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecentsActivity extends Activity {

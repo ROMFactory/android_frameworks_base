@@ -20,7 +20,6 @@ import dalvik.system.CloseGuard;
 
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteClosable;
-import android.database.sqlite.SQLiteException;
 import android.os.Binder;
 import android.os.Parcel;
 import android.os.Parcelable;

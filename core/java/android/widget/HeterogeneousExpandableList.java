@@ -16,9 +16,6 @@
 
 package android.widget;
 
-import android.view.View;
-import android.view.ViewGroup;
-
 /**
  * Additional methods that when implemented make an
  * {@link ExpandableListAdapter} take advantage of the {@link Adapter} view type

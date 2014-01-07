@@ -17,10 +17,6 @@
 package android.content;
 
 import android.app.ActivityManagerNative;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IIntentSender;
-import android.content.IIntentReceiver;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.Handler;

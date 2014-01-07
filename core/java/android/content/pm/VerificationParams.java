@@ -16,7 +16,6 @@
 
 package android.content.pm;
 
-import android.content.pm.ManifestDigest;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;

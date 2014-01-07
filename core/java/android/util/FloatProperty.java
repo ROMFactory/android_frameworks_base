@@ -15,8 +15,6 @@
  */
 package android.util;
 
-import android.util.Property;
-
 /**
  * An implementation of {@link android.util.Property} to be used specifically with fields of type
  * <code>float</code>. This type-specific subclass enables performance benefit by allowing

@@ -39,7 +39,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.display.DisplayManager;
-import android.hardware.display.WifiDisplayStatus;
 import android.net.ConnectivityManager;
 import android.media.MediaRouter;
 import android.net.wifi.WifiManager;

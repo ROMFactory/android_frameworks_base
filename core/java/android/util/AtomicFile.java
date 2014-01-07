@@ -17,7 +17,6 @@
 package android.util;
 
 import android.os.FileUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;

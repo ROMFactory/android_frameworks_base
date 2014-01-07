@@ -24,9 +24,7 @@ import com.android.internal.policy.PolicyManager;
 
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.IIntentSender;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -42,7 +40,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -86,7 +83,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.AdapterView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;

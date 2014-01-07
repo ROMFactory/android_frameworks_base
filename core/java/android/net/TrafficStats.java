@@ -16,10 +16,7 @@
 
 package android.net;
 
-import android.app.DownloadManager;
-import android.app.backup.BackupManager;
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 

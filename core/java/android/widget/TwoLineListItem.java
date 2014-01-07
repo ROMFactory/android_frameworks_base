@@ -22,7 +22,6 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.RelativeLayout;
 
 /**
  * <p>A view group with two children, intended for use in ListViews. This item has two 

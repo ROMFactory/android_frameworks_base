@@ -18,7 +18,6 @@ package android.app.backup;
 
 import android.app.IBackupAgent;
 import android.app.QueuedWork;
-import android.app.backup.IBackupManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.pm.ApplicationInfo;

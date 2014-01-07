@@ -36,7 +36,6 @@ import android.view.Surface;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityInteractionClient;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.accessibility.IAccessibilityInteractionConnection;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;

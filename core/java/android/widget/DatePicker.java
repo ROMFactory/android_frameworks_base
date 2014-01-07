@@ -45,7 +45,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import libcore.icu.ICU;
 

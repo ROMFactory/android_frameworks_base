@@ -16,8 +16,6 @@
 
 package com.android.systemui.statusbar.policy;
 
-import com.android.systemui.statusbar.policy.TelephonyIcons;
-
 class WimaxIcons {
     static final int[][] WIMAX_SIGNAL_STRENGTH = TelephonyIcons.DATA_SIGNAL_STRENGTH;
 

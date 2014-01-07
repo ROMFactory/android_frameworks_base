@@ -20,7 +20,6 @@ import android.opengl.GLUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewDebug;
-import android.view.ViewRootImpl;
 import android.view.WindowManagerGlobal;
 
 import org.apache.harmony.dalvik.ddmc.Chunk;

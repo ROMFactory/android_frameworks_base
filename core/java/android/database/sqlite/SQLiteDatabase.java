@@ -25,7 +25,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDebug.DbStats;
 import android.os.CancellationSignal;
 import android.os.Looper;
-import android.os.OperationCanceledException;
 import android.text.TextUtils;
 import android.util.EventLog;
 import android.util.Log;

@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.BadParcelableException;
 import android.os.Bundle;
@@ -34,7 +33,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 
 import java.text.NumberFormat;

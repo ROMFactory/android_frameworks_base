@@ -24,7 +24,6 @@ import android.os.Handler;
 import android.preference.Preference.OnPreferenceChangeInternalListener;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 

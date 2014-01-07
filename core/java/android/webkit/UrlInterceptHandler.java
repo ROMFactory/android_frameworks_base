@@ -17,7 +17,6 @@
 package android.webkit;
 
 import android.webkit.CacheManager.CacheResult;
-import android.webkit.PluginData;
 import java.util.Map;
 
 /**

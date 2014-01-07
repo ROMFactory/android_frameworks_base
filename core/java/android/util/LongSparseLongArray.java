@@ -18,7 +18,6 @@ package android.util;
 
 import com.android.internal.util.ArrayUtils;
 
-import java.util.Arrays;
 
 /**
  * Map of {@code long} to {@code long}. Unlike a normal array of longs, there

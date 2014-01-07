@@ -18,7 +18,6 @@ package android.os;
 
 import java.util.ArrayList;
 
-import android.util.Log;
 
 
 /**

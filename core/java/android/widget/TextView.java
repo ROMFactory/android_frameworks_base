@@ -102,8 +102,6 @@ import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -136,7 +134,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
 

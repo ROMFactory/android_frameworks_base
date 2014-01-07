@@ -19,7 +19,6 @@ package android.database.sqlite;
 import android.database.CursorWindow;
 import android.database.DatabaseUtils;
 import android.os.CancellationSignal;
-import android.os.OperationCanceledException;
 import android.os.ParcelFileDescriptor;
 
 /**

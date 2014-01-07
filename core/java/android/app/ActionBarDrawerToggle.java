@@ -20,7 +20,6 @@ package android.app;
 import java.lang.reflect.Method;
 
 import android.R;
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;

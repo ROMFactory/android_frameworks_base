@@ -16,8 +16,6 @@
 
 package com.android.systemui.recent;
 
-import android.graphics.drawable.Drawable;
-
 public interface NavigationCallback {
 
     final static int NAVBAR_BACK_HINT = 0;

@@ -24,7 +24,6 @@ import static android.net.NetworkPolicy.CYCLE_WEEKLY;
 import static android.text.format.Time.MONTH_DAY;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;

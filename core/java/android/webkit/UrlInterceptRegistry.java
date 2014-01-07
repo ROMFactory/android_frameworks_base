@@ -17,8 +17,6 @@
 package android.webkit;
 
 import android.webkit.CacheManager.CacheResult;
-import android.webkit.PluginData;
-import android.webkit.UrlInterceptHandler;
 
 import java.util.Iterator;
 import java.util.LinkedList;

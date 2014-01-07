@@ -35,9 +35,6 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.StrictMode;
-import android.provider.DocumentsContract;
-import android.provider.DocumentsProvider;
-import android.provider.OpenableColumns;
 import android.util.AttributeSet;
 import android.util.Log;
 

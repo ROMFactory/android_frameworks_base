@@ -16,7 +16,6 @@
 
 package android.webkit;
 
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Message;

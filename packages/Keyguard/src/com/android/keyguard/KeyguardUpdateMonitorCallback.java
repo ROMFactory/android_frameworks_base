@@ -16,11 +16,8 @@
 package com.android.keyguard;
 
 import android.app.PendingIntent;
-import android.app.admin.DevicePolicyManager;
 import android.graphics.Bitmap;
-import android.media.AudioManager;
 import android.os.SystemClock;
-import android.view.WindowManagerPolicy;
 
 import com.android.internal.telephony.IccCardConstants;
 

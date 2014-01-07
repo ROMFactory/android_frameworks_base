@@ -16,7 +16,6 @@
 
 package android.net;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;

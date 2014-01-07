@@ -20,7 +20,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.PrintWriter;
-import java.lang.Comparable;
 
 /**
  * Identifier for a specific application component

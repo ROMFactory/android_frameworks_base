@@ -23,7 +23,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.android.systemui.statusbar.BaseStatusBar.NotificationClicker;
-import com.android.systemui.R;
 
 import java.util.ArrayList;
 import java.util.Comparator;

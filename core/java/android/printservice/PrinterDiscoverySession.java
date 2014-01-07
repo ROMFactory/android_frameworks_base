@@ -18,7 +18,6 @@ package android.printservice;
 
 import android.content.pm.ParceledListSlice;
 import android.os.RemoteException;
-import android.print.PrinterCapabilitiesInfo;
 import android.print.PrinterId;
 import android.print.PrinterInfo;
 import android.util.ArrayMap;

@@ -16,7 +16,6 @@
 
 package android.os;
 
-import android.os.ICancellationSignal;
 
 /**
  * Provides the ability to cancel an operation in progress.

@@ -16,7 +16,6 @@
 
 package android.widget;
 
-import android.app.SearchDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ComponentName;

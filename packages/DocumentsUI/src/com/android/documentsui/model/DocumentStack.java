@@ -17,7 +17,6 @@
 package com.android.documentsui.model;
 
 import android.content.ContentResolver;
-import android.provider.DocumentsProvider;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -16,14 +16,10 @@
 
 package com.android.systemui.statusbar.phone;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.os.Handler;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
 
-import com.android.systemui.statusbar.phone.QuickSettings.Tile;
 
 class QuickSettingsDragListener implements OnDragListener {
 

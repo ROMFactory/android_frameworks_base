@@ -19,7 +19,6 @@
 package com.android.systemui.statusbar.phone;
 
 import android.animation.TimeInterpolator;
-import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 import android.view.GestureDetector;
 import android.view.MotionEvent;

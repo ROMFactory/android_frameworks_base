@@ -17,7 +17,6 @@
 package android.app.backup;
 
 import java.lang.String;
-import android.app.backup.RestoreSet;
 
 /**
  * Callback class for receiving progress reports during a restore operation.  These

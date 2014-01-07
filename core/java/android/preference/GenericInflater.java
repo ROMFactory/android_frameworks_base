@@ -27,9 +27,7 @@ import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.util.AttributeSet;
 import android.util.Xml;
-import android.view.ContextThemeWrapper;
 import android.view.InflateException;
-import android.view.LayoutInflater;
 
 // TODO: fix generics
 /**

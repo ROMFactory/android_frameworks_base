@@ -19,7 +19,6 @@ package android.widget;
 import android.content.Context;
 import android.text.Editable;
 import android.text.Selection;
-import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.method.ArrowKeyMovementMethod;
 import android.text.method.MovementMethod;

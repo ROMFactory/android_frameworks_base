@@ -16,7 +16,6 @@
 
 package android.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;

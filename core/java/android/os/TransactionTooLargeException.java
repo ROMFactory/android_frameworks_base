@@ -15,7 +15,6 @@
  */
 
 package android.os;
-import android.os.RemoteException;
 
 /**
  * The Binder transaction failed because it was too large.

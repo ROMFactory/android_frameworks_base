@@ -16,10 +16,6 @@
 
 package android.net;
 
-import android.net.LinkCapabilities;
-import android.net.LinkProperties;
-import android.net.LinkSocketNotifier;
-
 import android.util.Log;
 
 import java.io.IOException;

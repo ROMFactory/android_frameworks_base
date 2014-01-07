@@ -16,7 +16,6 @@
 
 package android.net;
 
-import android.net.ProxyProperties;
 import android.os.Parcelable;
 import android.os.Parcel;
 import android.text.TextUtils;

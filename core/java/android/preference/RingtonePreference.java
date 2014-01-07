@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.provider.Settings.System;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 

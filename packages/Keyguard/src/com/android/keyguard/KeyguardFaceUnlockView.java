@@ -31,7 +31,6 @@ import android.widget.LinearLayout;
 
 import com.android.internal.widget.LockPatternUtils;
 
-import java.lang.Math;
 
 public class KeyguardFaceUnlockView extends LinearLayout implements KeyguardSecurityView {
 

@@ -41,7 +41,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;

@@ -22,8 +22,6 @@ import static libcore.io.OsConstants.SOCK_STREAM;
 import static libcore.io.OsConstants.S_ISLNK;
 import static libcore.io.OsConstants.S_ISREG;
 
-import android.content.BroadcastReceiver;
-import android.content.ContentProvider;
 import android.util.Log;
 
 import dalvik.system.CloseGuard;

@@ -16,9 +16,6 @@
 
 package android.app.backup;
 
-import android.app.backup.RestoreSession;
-import android.app.backup.IBackupManager;
-import android.app.backup.IRestoreSession;
 import android.content.Context;
 import android.os.RemoteException;
 import android.os.ServiceManager;

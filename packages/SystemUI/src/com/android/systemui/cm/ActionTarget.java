@@ -48,7 +48,6 @@ import android.widget.Toast;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.cm.TorchConstants;
 import static com.android.internal.util.cm.NavigationRingConstants.*;
-import com.android.systemui.R;
 import com.android.systemui.screenshot.TakeScreenshotService;
 
 import java.net.URISyntaxException;

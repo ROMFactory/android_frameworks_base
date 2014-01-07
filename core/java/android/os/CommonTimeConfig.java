@@ -15,14 +15,8 @@
  */
 package android.os;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.NoSuchElementException;
-
-import android.os.CommonTimeUtils;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.os.ServiceManager;
 
 /**
  * Used for configuring and controlling the status of the android common time service.

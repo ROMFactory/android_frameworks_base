@@ -18,7 +18,6 @@ package com.android.documentsui;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.database.ContentObserver;
 import android.os.CancellationSignal;
 import android.os.OperationCanceledException;
 

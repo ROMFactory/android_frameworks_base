@@ -35,7 +35,6 @@ import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.WindowManager;
 
 import com.android.keyguard.KeyguardHostView.OnDismissAction;
 

@@ -24,7 +24,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
-import android.provider.DocumentsProvider;
 
 import com.android.documentsui.DocumentsApplication;
 import com.android.documentsui.RootCursorWrapper;

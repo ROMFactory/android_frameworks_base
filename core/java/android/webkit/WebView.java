@@ -28,7 +28,6 @@ import android.graphics.drawable.Drawable;
 import android.net.http.SslCertificate;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CancellationSignal;
 import android.os.Looper;
 import android.os.Message;
 import android.os.StrictMode;

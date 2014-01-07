@@ -16,11 +16,6 @@
 
 package android.database;
 
-import android.database.CrossProcessCursor;
-import android.database.Cursor;
-import android.database.CursorWindow;
-import android.database.CursorWrapper;
-
 /**
  * Cursor wrapper that implements {@link CrossProcessCursor}.
  * <p>
