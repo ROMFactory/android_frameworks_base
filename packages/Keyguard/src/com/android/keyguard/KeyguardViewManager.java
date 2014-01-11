@@ -419,7 +419,6 @@ public class KeyguardViewManager {
             lp.inputFeatures |= WindowManager.LayoutParams.INPUT_FEATURE_DISABLE_USER_ACTIVITY;
             lp.setTitle("Keyguard");
             mWindowLayoutParams = lp;
-            mViewManager.addView(mKeyguardHost, lp);
 
             KeyguardUpdateMonitor.getInstance(mContext).registerCallback(mBackgroundChanger);
 
