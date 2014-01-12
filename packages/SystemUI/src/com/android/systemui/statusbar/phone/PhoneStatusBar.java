@@ -2998,23 +2998,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode {
         }
     };
 
-    private View.OnClickListener mClockClickListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            // Collapse
-            animateCollapsePanels();
-
-            // Toggle HALO
-            Settings.System.putInt(mContext.getContentResolver(),
-                    Settings.System.HALO_ACTIVE, mHaloActive ? 0 : 1);
-
-            updateHalo();
-
-            // Switch off regular ticker
-            mTickerView.setVisibility(View.GONE);
-        }
-    };
-
-
     private View.OnClickListener mNotificationButtonListener = new View.OnClickListener() {
         public void onClick(View v) {
             animateExpandNotificationsPanel();
