@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
+ * This code has been modified. Portions copyright (C) 2013, 2014, OmniRom Project.
  * This code has been modified. Portions copyright (C) 2013, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,7 +71,7 @@ class QuickSettingsTileView extends FrameLayout {
         mRowSpan = 1;
 
         QuickSettingsTouchListener touchListener
-                = new QuickSettingsTouchListener();
+                = new QuickSettingsTouchListener(context, this);
         QuickSettingsDragListener dragListener = new QuickSettingsDragListener();
         setOnTouchListener(touchListener);
         setOnDragListener(dragListener);
