@@ -732,6 +732,10 @@ public class SpellChecker implements SpellCheckerSessionListener {
             }
 
             if (scheduleOtherSpellCheck) {
+                // Re-correct the valid start of span range to avoid IndexOutOfBoundsException
+                if (wordStart > end) {
+                    wordStart = end;
+                }
                 // Update range span: start new spell check from last wordStart
                 setRangeSpan(editable, wordStart, end);
             } else {
