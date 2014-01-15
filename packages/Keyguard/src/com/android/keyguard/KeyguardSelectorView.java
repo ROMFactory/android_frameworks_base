@@ -29,6 +29,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -36,20 +40,33 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Slog;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.android.internal.telephony.IccCardConstants.State;
 import com.android.internal.util.cm.LockscreenTargetUtils;
+import android.view.ViewConfiguration;
+import android.view.Gravity;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+
+import com.android.internal.telephony.IccCardConstants.State;
+import com.android.internal.util.cm.TorchConstants;
+import com.android.internal.view.RotationPolicy;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
 import com.android.internal.widget.multiwaveview.TargetDrawable;
 
 public class KeyguardSelectorView extends LinearLayout implements KeyguardSecurityView {
+
     private static final boolean DEBUG = KeyguardHostView.DEBUG;
     private static final String TAG = "SecuritySelectorView";
+
     private static final String ASSIST_ICON_METADATA_NAME =
         "com.android.systemui.action_assist_icon";
+
+    private static final int TOUCH_TIME = ViewConfiguration.getLongPressTimeout();
+
+    private Handler mHandler = new Handler();
 
     private KeyguardSecurityCallback mCallback;
     private GlowPadView mGlowPadView;
@@ -58,6 +75,9 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     private boolean mIsBouncing;
     private boolean mCameraDisabled;
     private boolean mSearchDisabled;
+    private boolean mGlowTorch;
+    private boolean mGlowTorchRunning;
+    private boolean mUserRotation;
     private LockPatternUtils mLockPatternUtils;
     private SecurityMessageDisplay mSecurityMessageDisplay;
     private Drawable mBouncerFrame;
@@ -65,6 +85,7 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
     private String[] mStoredTargets;
     private int mTargetOffset;
     private boolean mIsScreenLarge;
+    private int mTaps;
 
     OnTriggerListener mOnTriggerListener = new OnTriggerListener() {
 
@@ -122,15 +143,29 @@ if (mStoredTargets == null) {
             if (!mIsBouncing) {
                 doTransition(mFadeView, 1.0f);
             }
+            killGlowpadTorch();
         }
 
         public void onGrabbed(View v, int handle) {
             mCallback.userActivity(0);
             doTransition(mFadeView, 0.0f);
+            startGlowpadTorch();
         }
 
         public void onGrabbedStateChange(View v, int handle) {
 
+        }
+
+        public void onTargetChange(View v, int target) {
+            if (target != -1) {
+                killGlowpadTorch();
+            } else {
+                if (mGlowTorch && mGlowTorchRunning) {
+                    // Keep screen alive extremely tiny and
+                    // unintentional movement is logged here
+                    mCallback.userActivity(0);
+                }
+            }
         }
 
         public void onFinishFinalAnimation() {
@@ -200,6 +235,11 @@ if (mStoredTargets == null) {
         mSecurityMessageDisplay = new KeyguardMessageArea.Helper(this);
         View bouncerFrameView = findViewById(R.id.keyguard_selector_view_frame);
         mBouncerFrame = bouncerFrameView.getBackground();
+        mGlowTorchRunning = false;
+        mGlowTorch = Settings.System.getIntForUser(
+                mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_GLOWPAD_TORCH, 0,
+                UserHandle.USER_CURRENT) == 1;
     }
 
     public void setCarrierArea(View carrierArea) {
@@ -396,6 +436,53 @@ if (mStoredTargets == null) {
     public void setLockPatternUtils(LockPatternUtils utils) {
         mLockPatternUtils = utils;
     }
+
+    private void startGlowpadTorch() {
+        if (mGlowTorch) {
+            mHandler.removeCallbacks(checkDouble);
+            mHandler.removeCallbacks(checkLongPress);
+            if (mTaps > 0) {
+                mHandler.postDelayed(checkLongPress, TOUCH_TIME);
+                mTaps = 0;
+            } else {
+                mTaps += 1;
+                mHandler.postDelayed(checkDouble, 400);
+            }
+        }
+    }
+
+    private void killGlowpadTorch() {
+        if (mGlowTorch) {
+            mHandler.removeCallbacks(checkLongPress);
+            // Don't mess with torch if we didn't start it
+            if (mGlowTorchRunning) {
+                mGlowTorchRunning = false;
+                Intent intent = new Intent(TorchConstants.ACTION_OFF);
+                mContext.sendBroadcastAsUser(
+                        intent, new UserHandle(UserHandle.USER_CURRENT));
+                // Restore user rotation policy
+                RotationPolicy.setRotationLock(mContext, mUserRotation);
+            }
+        }
+    }
+
+    final Runnable checkLongPress = new Runnable () {
+        public void run() {
+            mGlowTorchRunning = true;
+            mUserRotation = RotationPolicy.isRotationLocked(mContext);
+            // Lock device so user doesn't accidentally rotate and lose torch
+            RotationPolicy.setRotationLock(mContext, true);
+            Intent intent = new Intent(TorchConstants.ACTION_ON);
+            mContext.sendBroadcastAsUser(
+                    intent, new UserHandle(UserHandle.USER_CURRENT));
+        }
+    };
+
+    final Runnable checkDouble = new Runnable () {
+        public void run() {
+            mTaps = 0;
+        }
+    };
 
     @Override
     public void reset() {

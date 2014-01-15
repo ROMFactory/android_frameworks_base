@@ -2636,7 +2636,13 @@ public final class Settings {
                 "active_display_hide_low_priority_notifications";
 
         /**
-         * Whether to display AM/PM after time when in 12h format
+         * Whether double-tap and hold on the lock glowpad starts the torch
+         * @hide
+         */
+        public static final String LOCKSCREEN_GLOWPAD_TORCH = "lockscreen_glowpad_torch";
+
+        /**
+         * Whether to display AM/PM after time in 12h format
          * @hide
          */
         public static final String ACTIVE_DISPLAY_SHOW_AMPM = "active_display_show_ampm";
