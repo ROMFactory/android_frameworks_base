@@ -1438,11 +1438,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
      * Listen for UI updates and refresh layout.
      */
     public void onUpdateUI() {
-        updateCarrierAndWifiLabelVisibility(true, false);
+        updateCarrierAndWifiLabelVisibility(true);
     }
 
     protected void updateCarrierAndWifiLabelVisibility(boolean force) {
->>>>>>> e554b81... UI not updated correctly in expanded statusbar
         if (!mShowCarrierInPanel || mCarrierAndWifiView == null) {
             return;
         }
