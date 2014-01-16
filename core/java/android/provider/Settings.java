@@ -2529,6 +2529,11 @@ public final class Settings {
          */
         public static final String POINTER_LOCATION = "pointer_location";
 
+        /** Sprint MWI Quirk: Show message wait indicator notifications
+        * @hide
+        */
+       public static final String ENABLE_MWI_NOTIFICATION = "enable_mwi_notification";
+
         /**
          * Show touch positions on screen?
          * 0 = no
