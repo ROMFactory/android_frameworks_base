@@ -2492,6 +2492,39 @@ public final class Settings {
         public static final String BATTERY_LIGHT_FULL_COLOR = "battery_light_full_color";
 
         /**
+         * What color to use for the battery LED while charging - really full (100%)
+         * @hide
+         */
+        public static final String BATTERY_LIGHT_REALLY_FULL_COLOR = "battery_light_really_full_color";
+
+        /**
+         * Network speed indicator
+         * 0 = disabled
+         * 1 = show bits per second
+         * 2 = show Bytes per second
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
+
+        /**
+         * Give SMS notifications a breathing effect
+         * @hide
+         */
+        public static final String KEY_SMS_BREATH = "sms_breath";
+
+        /**
+         * Give Missed call notifications a breathing effect
+         * @hide
+         */
+        public static final String KEY_MISSED_CALL_BREATH = "missed_call_breath";
+
+        /**
+         * Give Voicemail notifications a breathing effect
+         * @hide
+         */
+        public static final String KEY_VOICEMAIL_BREATH = "voicemail_breath";
+
+        /**
          * @hide
          */
         public static final String DISABLE_CAMERA_WIDGET = "disable_camera_widget";
@@ -2503,22 +2536,11 @@ public final class Settings {
         public static final String ENABLE_VOLUME_OPTIONS = "enable_volume_options";
 
         /**
-         * What color to use for the battery LED while charging - really full (100%)
-         * @hide
-         */
-        public static final String BATTERY_LIGHT_REALLY_FULL_COLOR = "battery_light_really_full_color";
-
-        /**
          * Setting to link Ringtone and Notification.
          * @hide
          */
         public static final String VOLUME_LINK_NOTIFICATION = "volume_link_notification";
 
-        /**
-         * Network speed indicator
-         * @hide
-         */
-        public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
 
         /** Volume adjust sounds enable/disable
          * @hide
