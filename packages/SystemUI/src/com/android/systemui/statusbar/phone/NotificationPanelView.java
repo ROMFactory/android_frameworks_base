@@ -148,13 +148,19 @@ public class NotificationPanelView extends PanelView {
             boolean flip = false;
             boolean swipeFlipJustFinished = false;
             boolean swipeFlipJustStarted = false;
+            int smartPulldownMode = Settings.System.getIntForUser(getContext().getContentResolver(),
+                    Settings.System.QS_SMART_PULLDOWN, 0, UserHandle.USER_CURRENT);
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     mGestureStartX = event.getX(0);
                     mGestureStartY = event.getY(0);
                     mTrackingSwipe = isFullyExpanded();
                     mOkToFlip = getExpandedHeight() == 0;
-                    if (event.getX(0) > getWidth() * mQuickPullDownPercentage) {
+                    if (smartPulldownMode == 1 && !mStatusBar.hasClearableNotifications()) {
+                        flip = true;
+                    } else if (smartPulldownMode == 2 && !mStatusBar.hasVisibleNotifications()) {
+                        flip = true;
+                    } else if (event.getX(0) > getWidth() * mQuickPullDownPercentage) {
                         flip = true;
                     }
                     break;
