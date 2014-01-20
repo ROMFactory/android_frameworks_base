@@ -226,6 +226,7 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
         mVertical = false;
         mShowMenu = false;
         mDelegateHelper = new DelegateViewHelper(this);
+        mDelegateHelper.setSwapXY(res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
 
         RecentsActivity.setNavigationCallback(this);
 
@@ -638,6 +639,12 @@ public class NavigationBarView extends LinearLayout implements NavigationCallbac
 
         if (DEBUG) {
             Log.d(TAG, "reorient(): rot=" + mDisplay.getRotation());
+        }
+
+        // swap to x coordinate if orientation is in landscape
+        if (mDelegateHelper != null) {
+            mDelegateHelper.setSwapXY(mContext.getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE);
         }
 
         setNavigationIconHints(mNavigationIconHints, true);
