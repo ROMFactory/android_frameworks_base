@@ -5651,7 +5651,7 @@ public class WindowManagerService extends IWindowManager.Stub
                         screenshotReady = true;
                     }
 
-                    if (fullscreen) {
+                    if (ws.isFullscreen(dw, dh)) {
                         // No point in continuing down through windows.
                         break;
                     }
