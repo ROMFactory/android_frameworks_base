@@ -54,6 +54,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 import android.widget.RemoteViews.RemoteView;
+import android.widget.SmoothProgressDrawable.Builder;
 
 import java.util.ArrayList;
 
@@ -283,7 +284,7 @@ public class ProgressBar extends View {
                 android.R.anim.linear_interpolator); // default to linear interpolator
         if (resID > 0) {
             setInterpolator(context, resID);
-        } 
+        }
 
         setMax(a.getInt(R.styleable.ProgressBar_max, mMax));
 
@@ -335,7 +336,6 @@ public class ProgressBar extends View {
 
         mOnlyIndeterminate = a.getBoolean(
                 R.styleable.ProgressBar_indeterminateOnly, mOnlyIndeterminate);
-
         mNoInvalidate = false;
 
         setIndeterminate(mOnlyIndeterminate || a.getBoolean(
