@@ -558,6 +558,12 @@ class QuickSettings {
                   wifiTile.setBackOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            mModel.toggleWifiApState();
+                        }
+                    });
+                    wifiTile.setBackOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
                             if (cm.getTetherableWifiRegexs().length != 0) {
                                 Intent intent = new Intent();
                                 intent.setComponent(new ComponentName(
@@ -565,6 +571,7 @@ class QuickSettings {
                                       "com.android.settings.Settings$TetherSettingsActivity"));
                                 startSettingsActivity(intent);
                             }
+                            return true;
                   }} );
 
                   mModel.addWifiBackTile(wifiTile.getBack(), new QuickSettingsModel.RefreshCallback() {

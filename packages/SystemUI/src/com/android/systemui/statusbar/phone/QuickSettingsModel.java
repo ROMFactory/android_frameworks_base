@@ -1567,6 +1567,61 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
         mAudioManager.setRingerMode(r.mRingerMode);
     }
 
+    protected void toggleWifiApState() {
+        setWifiApEnabled(isWifiApEnabled() ? false : true);
+    }
+
+    protected boolean isWifiApEnabled() {
+        WifiManager mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        int state = mWifiManager.getWifiApState();
+        boolean active;
+        switch (state) {
+            case WifiManager.WIFI_AP_STATE_ENABLING:
+            case WifiManager.WIFI_AP_STATE_ENABLED:
+                active = true;
+                break;
+            case WifiManager.WIFI_AP_STATE_DISABLING:
+            case WifiManager.WIFI_AP_STATE_DISABLED:
+            default:
+                active = false;
+                break;
+        }
+        return active;
+    }
+
+    protected void setWifiApEnabled(boolean enable) {
+        WifiManager mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+        final ContentResolver cr = mContext.getContentResolver();
+        /**
+         * Disable Wifi if enabling tethering
+         */
+        int wifiState = mWifiManager.getWifiState();
+        if (enable && ((wifiState == WifiManager.WIFI_STATE_ENABLING) ||
+                (wifiState == WifiManager.WIFI_STATE_ENABLED))) {
+            mWifiManager.setWifiEnabled(false);
+            Settings.Global.putInt(cr, Settings.Global.WIFI_SAVED_STATE, 1);
+        }
+
+        // Turn on the Wifi AP
+        mWifiManager.setWifiApEnabled(null, enable);
+
+        /**
+         *  If needed, restore Wifi on tether disable
+         */
+        if (!enable) {
+            int wifiSavedState = 0;
+            try {
+                wifiSavedState = Settings.Global.getInt(cr, Settings.Global.WIFI_SAVED_STATE);
+            } catch (Settings.SettingNotFoundException e) {
+                // Do nothing here
+            }
+            if (wifiSavedState == 1) {
+                mWifiManager.setWifiEnabled(true);
+                Settings.Global.putInt(cr, Settings.Global.WIFI_SAVED_STATE, 0);
+            }
+        }
+    }
+
     private static class Ringer {
         final boolean mVibrateWhenRinging;
         final int mRingerMode;
