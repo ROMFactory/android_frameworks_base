@@ -122,7 +122,8 @@ public class RecentsActivity extends Activity {
     }
 
     public static boolean forceOpaqueBackground(Context context) {
-        return WallpaperManager.getInstance(context).getWallpaperInfo() != null;
+        return WallpaperManager.getInstance(context).getWallpaperInfo() != null
+                && !ActivityManager.isHighEndGfx();
     }
 
     public void setRecentHints(boolean show) {
@@ -136,7 +137,12 @@ public class RecentsActivity extends Activity {
 
     @Override
     public void onStart() {
-        updateWallpaperVisibility(true);
+        // Hide wallpaper if it's not a static image and device is low-end
+        if (forceOpaqueBackground(this)) {
+            updateWallpaperVisibility(false);
+        } else {
+            updateWallpaperVisibility(true);
+        }
         mShowing = true;
         setRecentHints(true);
         if (mRecentsPanel != null) {
