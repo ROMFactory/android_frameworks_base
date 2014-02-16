@@ -6178,4 +6178,13 @@
         <attr name="spb_mirror_mode" format="boolean"/>
         <attr name="spb_colors" format="reference" />
     </declare-styleable>
+
+    <!-- Attributes that can be used with <code>&lt;PieChartView&gt;</code>
+    tags. -->
+    <declare-styleable name="PieChartView">
+        <attr name="outlineColor" format="color"/>
+        <attr name="outlineWidth" format="dimension"/>
+        <attr name="originAngle" format="integer"/>
+    </declare-styleable>
+    
 </resources>
